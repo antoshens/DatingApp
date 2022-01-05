@@ -1,4 +1,5 @@
 using DatingApp.Infrastructure.IoC;
+using DatingApp.WebAPI.Utils.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,6 +9,8 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddAuthentication(builder.Configuration);
 
 // Register services using DI container
 RegisterServices(builder.Services, builder.Configuration);
@@ -22,6 +25,14 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseRouting();
+
+app.UseCors(_ => _.AllowAnyHeader()
+    .AllowAnyMethod()
+    .WithOrigins("http://localhost:4200"));
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 

@@ -1,6 +1,6 @@
 ﻿namespace DatingApp.Core.Model
 {
-    public enum UserSex
+    public enum UserSex : byte
     {
         Unknown = 0,
         Male = 1,

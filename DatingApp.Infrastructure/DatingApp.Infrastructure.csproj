@@ -13,6 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\DatingApp.Business\DatingApp.Business.csproj" />
     <ProjectReference Include="..\DatingApp.Core\DatingApp.Core.csproj" />
   </ItemGroup>
 
