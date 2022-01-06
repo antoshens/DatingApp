@@ -3,12 +3,19 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DatingApp.Core.Model
 {
-    public partial class User : IEntity
+    public partial class User : IEntity, IEntityAudit
     {
         [NotMapped]
         public int PrimaryKey => UserId;
 
+        [NotMapped]
+        public int AuditEntityKey => UserId;
+
         public bool IsDeleted { get; set; }
+
+        public int AuditInfoId { get; set; }
+
+        public AuditInfo AuditInfo { get; set; } // 1:M (FK) AuditInfo.AuditInfoId
 
         public User(string userName, byte[] passwordHash, byte[] passwordSalt, string email,
             DateTime? birthDate = null, string? firstName = null, string? lastName = null, byte? sex = null)
