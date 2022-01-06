@@ -47,12 +47,9 @@ namespace DatingApp.Business.Services
 
             var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(usermModel.Password));
 
-            for (int i = 0; i < computedHash.Length; ++i)
+            if (!CompareHashes(computedHash, existedUser.PasswordHash))
             {
-                if (computedHash[i] != existedUser.PasswordHash[i])
-                {
-                    throw new ArgumentNullException("Login or Password is incorrect");
-                }
+                throw new ArgumentNullException("Login or Password is incorrect");
             }
 
             return new LogedUserDto
@@ -60,6 +57,24 @@ namespace DatingApp.Business.Services
                 UserName = usermModel.UserName,
                 Token = _tokenService.CreateToken(existedUser)
             };
+        }
+
+        private bool CompareHashes(byte[] hash1, byte[] hash2)
+        {
+            if (hash1.Length != hash2.Length)
+            {
+                return false;
+            }
+
+            for (int i = 0; i < hash1.Length; ++i)
+            {
+                if (hash1[i] != hash2[i])
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
     }
 }

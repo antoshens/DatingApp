@@ -8,6 +8,7 @@ namespace DatingApp.Core.Model.DTOs
         public string UserName { get; set; }
 
         [Required]
+        [StringLength(64, MinimumLength = 6)]
         public string Password { get; set; }
 
         public string FirstName { get; set; }

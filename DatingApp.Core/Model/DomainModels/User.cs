@@ -37,7 +37,6 @@ namespace DatingApp.Core.Model
             }
 
             Sex = sex;
-
             IsDeleted = false;
         }
     }
