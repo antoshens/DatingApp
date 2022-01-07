@@ -20,6 +20,7 @@ namespace DatingApp.Business.Services.Authentication
             var claims = new List<Claim>
             {
                 new Claim(JwtRegisteredClaimNames.NameId, user.UserName),
+                new Claim(JwtRegisteredClaimNames.Sub, user.UserId.ToString()),
             };
 
             var creds = new SigningCredentials(_key, SecurityAlgorithms.HmacSha512Signature);
@@ -36,6 +37,19 @@ namespace DatingApp.Business.Services.Authentication
             var token = tokenHandler.CreateToken(tokenDescriptor);
 
             return tokenHandler.WriteToken(token);
+        }
+
+        public int? GetCurrentUserId(ClaimsPrincipal user)
+        {
+            if (user.HasClaim(c => c.Type == "sub"))
+            {
+                var userIdText = user.Claims.First(c => c.Type == "sub").Value;
+                var userId = Convert.ToInt32(userIdText);
+
+                return userId;
+            }
+
+            return null;
         }
     }
 }

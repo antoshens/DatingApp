@@ -12,12 +12,13 @@ namespace DatingApp.Core.Data
         private readonly int _userId;
         private readonly ILogger<DataContext> _logger;
 
+        // To be used for development purpose only
         public DataContext(DbContextOptions<DataContext> options) : base(options)
         {
         }
 
         public DataContext(DbContextOptions<DataContext> options,
-            ILogger<DataContext> logger = null, int ? userId = null) : base(options)
+            ILogger<DataContext> logger, int ? userId = null) : base(options)
         {
             _userId = userId.HasValue ? userId.Value : 0;
             _logger = logger;
@@ -30,6 +31,7 @@ namespace DatingApp.Core.Data
          */
         public DbSet<User> Users { get; set; }
         public DbSet<AuditInfo> AuditInfoes { get; set; }
+        public DbSet<Photo> Photos { get; set; }
 
         /* 
          * ===============================================================

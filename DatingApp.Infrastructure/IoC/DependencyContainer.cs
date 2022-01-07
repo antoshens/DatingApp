@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using DatingApp.Business.Services.Authentication;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Http;
 
 namespace DatingApp.Infrastructure.IoC
 {
@@ -12,6 +13,9 @@ namespace DatingApp.Infrastructure.IoC
     {
         public static void RegisterServices(IServiceCollection services, IConfiguration configuration)
         {
+            /* Register DataContextFactory */
+            services.AddScoped<DataContextFactory>();
+
             // DatingApp.Core
             var contextOptions = new DbContextOptionsBuilder<DataContext>()
                    .UseSqlServer(configuration.GetConnectionString("DefaultConnection"))
@@ -22,16 +26,15 @@ namespace DatingApp.Infrastructure.IoC
                 var logger = scope.GetRequiredService<ILogger<DataContext>>();
 
                 /* MS SQL Server connection */
-                // TODO: use real logged-in user using JWS tokens
-                var loggedInUserId = 11;
-                services.AddScoped<DataContext>(_ => new DataContext(contextOptions, logger, loggedInUserId));
+                var dataContextFactory = scope.GetRequiredService<DataContextFactory>();
+                services.AddScoped<DataContext>(_ => dataContextFactory.CreateDataContext(contextOptions));
             }
-            
 
             // DatingApp.Business
             /* Register services */
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ITokenService, TokenService>();
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         }
     }
 }

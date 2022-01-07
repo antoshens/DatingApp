@@ -1,23 +1,17 @@
 ﻿using DatingApp.Core.Model.DomainModels;
-using System.ComponentModel.DataAnnotations.Schema;
+using DatingApp.Core.Extensions;
 
 namespace DatingApp.Core.Model
 {
     public partial class User : IEntity, IEntityAudit
     {
-        [NotMapped]
-        public int PrimaryKey => UserId;
+        public User()
+        {
 
-        [NotMapped]
-        public int AuditEntityKey => UserId;
-
-        public bool IsDeleted { get; set; }
-
-        public int AuditInfoId { get; set; }
-
-        public AuditInfo AuditInfo { get; set; } // 1:M (FK) AuditInfo.AuditInfoId
+        }
 
         public User(string userName, byte[] passwordHash, byte[] passwordSalt, string email,
+            string interests, string lookingFor, string city, string country, byte[] mainPhotoHash,
             DateTime? birthDate = null, string? firstName = null, string? lastName = null, byte? sex = null)
         {
             if (string.IsNullOrEmpty(userName) || string.IsNullOrWhiteSpace(userName))
@@ -37,6 +31,12 @@ namespace DatingApp.Core.Model
             PasswordHash = passwordHash;
             PasswordSalt = passwordSalt;
             BirthDate = birthDate;
+            Interests = interests;
+            LookingFor = lookingFor;
+            City = city;
+            Country = country;
+
+            AddUserPhoto(mainPhotoHash, true);
 
             if (!sex.HasValue || !Enum.IsDefined(typeof(UserSex), sex.Value))
             {
@@ -45,6 +45,16 @@ namespace DatingApp.Core.Model
 
             Sex = sex;
             IsDeleted = false;
+        }
+
+        public void AddUserPhoto(byte[] photoHash, bool isMain)
+        {
+            Photos.Add(new Photo(photoHash, isMain));
+        }
+
+        public int? GetAge()
+        {
+            return BirthDate?.GetFullAge();
         }
     }
 }
