@@ -1,5 +1,6 @@
 ﻿using DatingApp.Core.Model.DomainModels;
 using DatingApp.Core.Extensions;
+using System.Text;
 
 namespace DatingApp.Core.Model
 {
@@ -11,7 +12,7 @@ namespace DatingApp.Core.Model
         }
 
         public User(string userName, byte[] passwordHash, byte[] passwordSalt, string email,
-            string interests, string lookingFor, string city, string country, byte[] mainPhotoHash,
+            string interests, string lookingFor, string city, string country, string mainPhotoData,
             DateTime? birthDate = null, string? firstName = null, string? lastName = null, byte? sex = null)
         {
             if (string.IsNullOrEmpty(userName) || string.IsNullOrWhiteSpace(userName))
@@ -36,7 +37,7 @@ namespace DatingApp.Core.Model
             City = city;
             Country = country;
 
-            AddUserPhoto(mainPhotoHash, true);
+            AddUserPhoto(mainPhotoData, true);
 
             if (!sex.HasValue || !Enum.IsDefined(typeof(UserSex), sex.Value))
             {
@@ -47,8 +48,12 @@ namespace DatingApp.Core.Model
             IsDeleted = false;
         }
 
-        public void AddUserPhoto(byte[] photoHash, bool isMain)
+        public void AddUserPhoto(string photoData, bool isMain)
         {
+            var photoHash = Encoding.UTF8.GetBytes(photoData);
+
+            if (Photos == null) Photos = new List<Photo>();
+
             Photos.Add(new Photo(photoHash, isMain));
         }
 

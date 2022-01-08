@@ -12,23 +12,23 @@ namespace DatingApp.Core.Model
         public bool IsDeleted { get; set; }
         public int AuditInfoId { get; set; }
 
-        public int UserId { get; set; }
-        public string UserName { get; set; }
-        public string Email { get; set; }
-        public string? FirstName { get; set; }
-        public string? LastName { get; set; }
-        public DateTime? BirthDate { get; set; }
-        public byte? Sex { get; set; }
-        public byte[] PasswordHash { get; set; }
-        public byte[] PasswordSalt { get; set; }
-        public DateTime LastActive { get; set; } = DateTime.UtcNow;
-        public string Interests { get; set; }
-        public string LookingFor {get; set;}
-        public string City { get; set; }
-        public string Country { get; set; }
+        public int UserId { get; private set; }
+        public string UserName { get; private set; }
+        public string Email { get; private set; }
+        public string? FirstName { get; private set; }
+        public string? LastName { get; private set; }
+        public DateTime? BirthDate { get; private set; }
+        public byte? Sex { get; private set; }
+        public byte[] PasswordHash { get; private set; }
+        public byte[] PasswordSalt { get; private set; }
+        public DateTime LastActive { get; private set; } = DateTime.UtcNow;
+        public string Interests { get; private set; }
+        public string LookingFor {get; private set; }
+        public string City { get; private set; }
+        public string Country { get; private set; }
 
         // Foreign Keys (FK)
         public AuditInfo AuditInfo { get; set; } // 1:1 (FK) AuditInfo.AuditInfoId
-        public ICollection<Photo> Photos { get; set; } // 1:M (FK) Photo.PhotoId
+        public ICollection<Photo> Photos { get; private set; } // 1:M (FK) Photo.PhotoId
     }
 }

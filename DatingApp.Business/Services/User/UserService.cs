@@ -1,20 +1,22 @@
 ﻿using DatingApp.Business.Services.Authentication;
-using Microsoft.EntityFrameworkCore;
+using DatingApp.Core.Data.Repositories;
 using System.Security.Cryptography;
 using System.Text;
 
 namespace DatingApp.Business.Services
 {
-    public class UserService : BaseService, IUserService
+    public class UserService : IUserService
     {
         private ITokenService _tokenService;
+        private IUserRepository _userRepository;
 
-        public UserService(DataContext db, ITokenService tokenService) : base(db)
+        public UserService(IUserRepository userRepository, ITokenService tokenService)
         {
             _tokenService = tokenService;
+            _userRepository = userRepository;
         }
 
-        public async Task<RegisterUserDto> RegisterNewUser(RegisterUserDto userModel)
+        public async Task<UserDto> RegisterNewUser(UserDto userModel)
         {
             using var hmac = new HMACSHA512();
 
@@ -26,21 +28,21 @@ namespace DatingApp.Business.Services
                 userModel.LookingFor,
                 userModel.City,
                 userModel.Country,
-                userModel.MainPtotoHash,
+                userModel.MainPhotoData,
                 userModel.BirthDate,
                 userModel.FirstName,
                 userModel.LastName,
                 userModel.Sex);
 
-            db.Users.Add(newUser);
-            await db.SaveChangesAsync();
+            _userRepository.AddUser(newUser);
+            await _userRepository.SaveAllAsync();
 
             return userModel;
         }
 
         public async Task<LogedUserDto> LoginUser(LoginUserDto usermModel)
         {
-            var existedUser = await db.Users.SingleOrDefaultAsync(u => u.UserName == usermModel.UserName
+            var existedUser = await _userRepository.GetByPredicateAsync(u => u.UserName == usermModel.UserName
                                                     || u.Email == usermModel.UserName);
 
             if (existedUser == null)

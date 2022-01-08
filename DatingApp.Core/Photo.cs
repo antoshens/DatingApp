@@ -21,6 +21,6 @@ namespace DatingApp.Core
 
         // Foreign Keys (FK)
         public AuditInfo AuditInfo { get; set; } // 1:1 (FK) AuditInfo.AuditInfoId
-        public User User { get; set; } // M:1 (FK) User.UserId
+        public User User { get; private set; } // M:1 (FK) User.UserId
     }
 }

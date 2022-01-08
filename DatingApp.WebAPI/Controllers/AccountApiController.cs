@@ -13,7 +13,7 @@ namespace DatingApp.WebAPI.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<RegisterUserDto> Register(RegisterUserDto model)
+        public async Task<UserDto> Register(UserDto model)
         {
             return await _userService.RegisterNewUser(model);
         }

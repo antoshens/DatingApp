@@ -29,9 +29,9 @@ namespace DatingApp.Core.Data
          * ========================== Db Tables ==========================
          * ===============================================================
          */
-        public DbSet<User> Users { get; set; }
-        public DbSet<AuditInfo> AuditInfoes { get; set; }
-        public DbSet<Photo> Photos { get; set; }
+        public virtual DbSet<User> Users { get; set; }
+        public virtual DbSet<AuditInfo> AuditInfoes { get; set; }
+        public virtual DbSet<Photo> Photos { get; set; }
 
         /* 
          * ===============================================================

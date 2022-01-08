@@ -2,7 +2,7 @@
 {
     public interface IUserService
     {
-        Task<RegisterUserDto> RegisterNewUser(RegisterUserDto userModel);
+        Task<UserDto> RegisterNewUser(UserDto userModel);
         Task<LogedUserDto> LoginUser(LoginUserDto usermMdel);
     }
 }

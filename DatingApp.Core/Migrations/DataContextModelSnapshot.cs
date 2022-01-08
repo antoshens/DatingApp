@@ -47,7 +47,7 @@ namespace DatingApp.Core.Migrations
 
                     b.HasKey("AuditInfoId");
 
-                    b.ToTable("AuditInfoes");
+                    b.ToTable("AuditInfoes", (string)null);
                 });
 
             modelBuilder.Entity("DatingApp.Core.Model.User", b =>
@@ -115,7 +115,7 @@ namespace DatingApp.Core.Migrations
 
                     b.HasIndex("AuditInfoId");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("DatingApp.Core.Photo", b =>
@@ -148,7 +148,7 @@ namespace DatingApp.Core.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Photos");
+                    b.ToTable("Photos", (string)null);
                 });
 
             modelBuilder.Entity("DatingApp.Core.Model.User", b =>

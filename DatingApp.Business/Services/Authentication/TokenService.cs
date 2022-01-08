@@ -41,6 +41,8 @@ namespace DatingApp.Business.Services.Authentication
 
         public int? GetCurrentUserId(ClaimsPrincipal user)
         {
+            if (user == null) return null;
+
             if (user.HasClaim(c => c.Type == "sub"))
             {
                 var userIdText = user.Claims.First(c => c.Type == "sub").Value;
