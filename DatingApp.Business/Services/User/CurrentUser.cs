@@ -23,7 +23,7 @@ namespace DatingApp.Business.Services
             var userPrincipal = _httpContextAccessor.HttpContext?.User;
 
             var currentUserId = _tokenService.GetCurrentUserId(userPrincipal);
-            var currentUser = _userRepository.GetFullUser(currentUserId.HasValue ? currentUserId.Value : 0);
+            var currentUser = _userRepository.GetUser(currentUserId.HasValue ? currentUserId.Value : 0);
 
             return currentUser;
         }

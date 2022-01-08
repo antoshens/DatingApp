@@ -6,6 +6,7 @@ namespace DatingApp.Core.Data.Repositories
     public interface IUserRepository : IBaseRepository<User>
     {
         T GetUser<T>(int userId);
+        User GetUser(int userId);
         User GetFullUser(int userId);
         UserDto UpdatUser(User user);
         UserDto AddUser(User user);

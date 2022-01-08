@@ -85,7 +85,7 @@ namespace DatingApp.Business.Services
 
         public async Task<UserDto> UpdateUser(int userId, UserDto userModel)
         {
-            var user = _userRepository.GetFullUser(userId);
+            var user = _userRepository.GetUser(userId);
 
             user.UpdateMainUserFields(userModel.Interests,
                 userModel.LookingFor,

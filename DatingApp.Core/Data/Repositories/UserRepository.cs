@@ -13,11 +13,18 @@ namespace DatingApp.Core.Data.Repositories
 
         public T GetUser<T>(int userId)
         {
-            var domainUser = Db.Users.SingleOrDefault(u => u.UserId == userId);
+            var domainUser = GetUser(userId);
 
             var userModel = this.Mapper.Map<User, T>(domainUser);
 
             return userModel;
+        }
+
+        public User GetUser(int userId)
+        {
+            var user = Db.Users.SingleOrDefault(u => u.UserId == userId);
+
+            return user;
         }
 
         public User GetFullUser(int userId)
