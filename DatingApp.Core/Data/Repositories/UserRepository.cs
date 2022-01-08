@@ -29,13 +29,13 @@ namespace DatingApp.Core.Data.Repositories
             return user;
         }
 
-        public User UpdatUser(UserDto user)
+        public UserDto UpdatUser(User user)
         {
             Db.Entry(user).State = EntityState.Modified;
 
-            var domainUser = this.Mapper.Map<UserDto, User>(user);
+            var userDto = this.Mapper.Map<User, UserDto>(user);
 
-            return domainUser;
+            return userDto;
         }
 
         public UserDto AddUser(User user)
@@ -45,6 +45,11 @@ namespace DatingApp.Core.Data.Repositories
             var userDto = this.Mapper.Map<User, UserDto>(user);
 
             return userDto;
+        }
+
+        public void DeleteUser(User user)
+        {
+            Db.Users.Remove(user);
         }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using DatingApp.Business.Services.Authentication;
-using DatingApp.Core.Data.Repositories;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -82,6 +81,34 @@ namespace DatingApp.Business.Services
             }
 
             return true;
+        }
+
+        public async Task<UserDto> UpdateUser(int userId, UserDto userModel)
+        {
+            var user = _userRepository.GetFullUser(userId);
+
+            user.UpdateMainUserFields(userModel.Interests,
+                userModel.LookingFor,
+                userModel.City,
+                userModel.Country,
+                userModel.BirthDate,
+                userModel.FirstName,
+                userModel.LastName,
+                userModel.Sex);
+
+            var userDto = _userRepository.UpdatUser(user);
+            await _userRepository.SaveAllAsync();
+
+            return userDto;
+        }
+
+        public async Task DeleteUser(int userId)
+        {
+            var user = _userRepository.GetFullUser(userId);
+
+            _userRepository.DeleteUser(user);
+
+            await _userRepository.SaveAllAsync();
         }
     }
 }

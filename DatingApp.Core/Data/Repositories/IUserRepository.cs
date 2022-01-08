@@ -7,7 +7,8 @@ namespace DatingApp.Core.Data.Repositories
     {
         T GetUser<T>(int userId);
         User GetFullUser(int userId);
-        User UpdatUser(UserDto user);
+        UserDto UpdatUser(User user);
         UserDto AddUser(User user);
+        void DeleteUser(User user);
     }
 }
