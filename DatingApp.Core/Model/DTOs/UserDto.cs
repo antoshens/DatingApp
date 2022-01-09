@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using DatingApp.Core.Model.AutoMapper;
 using System.ComponentModel.DataAnnotations;
-using System.Text;
 
 namespace DatingApp.Core.Model.DTOs
 {
@@ -27,7 +26,7 @@ namespace DatingApp.Core.Model.DTOs
         public string Country { get; set; }
 
         [Required]
-        public string MainPhotoData { get; set; }
+        public IEnumerable<PhotoDto> Photos { get; set; }
 
         public string? FirstName { get; set; }
 
@@ -44,17 +43,20 @@ namespace DatingApp.Core.Model.DTOs
         public void ConfigureMapFrom(IMappingExpression<UserDto, User> mapping)
         {
             mapping.ForMember(x => x.Photos,
-                s => s.MapFrom(x => new List<Photo> {
-                    new Photo(Encoding.UTF8.GetBytes(x.MainPhotoData), true)
-                }));
+               s => s.MapFrom(x => x.Photos
+                      .Select(_ => new Photo(_.PublicId, _.Url, _.IsMain))));
         }
 
         public void ConfigureMapTo(IMappingExpression<User, UserDto> mapping)
         {
-            mapping.ForMember(x => x.MainPhotoData,
-                s => s.MapFrom(x => x.Photos.Where(p => p.IsMain)
-                                .Select(x => x.PhotoData)
-                                .FirstOrDefault()));
+            mapping.ForMember(x => x.Photos,
+                s => s.MapFrom(x => x.Photos.Select(x => new PhotoDto
+                    {
+                        PublicId = x.PublicId,
+                        Url = x.Url,
+                        IsMain = x.IsMain,
+                    })
+                    .FirstOrDefault()));
         }
     }
 }

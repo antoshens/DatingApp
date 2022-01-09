@@ -1,8 +1,7 @@
-﻿using DatingApp.Core.Model;
-using DatingApp.Core.Model.DomainModels;
+﻿using DatingApp.Core.Model.DomainModels;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace DatingApp.Core
+namespace DatingApp.Core.Model
 {
     public partial class Photo : IEntity, IEntityAudit
     {
@@ -15,7 +14,8 @@ namespace DatingApp.Core
 
         public int PhotoId { get; private set; }
         public bool IsMain { get; private set; }
-        public byte[] PhotoData { get; private set; }
+        public string Url { get; private set; }
+        public int PublicId { get; private set; }
         public int UserId { get; private set; }
 
 

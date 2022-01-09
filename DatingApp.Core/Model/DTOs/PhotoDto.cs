@@ -2,7 +2,8 @@
 {
     public class PhotoDto
     {
-        public string PhotoData { get; set; }
+        public int PublicId { get; set; }
+        public string Url { get; set; }
         public bool IsMain { get; set; }
     }
 }

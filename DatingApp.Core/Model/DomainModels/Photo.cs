@@ -1,4 +1,4 @@
-﻿namespace DatingApp.Core
+﻿namespace DatingApp.Core.Model
 {
     public partial class Photo
     {
@@ -7,9 +7,10 @@
 
         }
 
-        public Photo(byte[] photoHash, bool isMain)
+        public Photo(int photoId, string url, bool isMain)
         {
-            PhotoData = photoHash;
+            PublicId = photoId;
+            Url = url;
             IsMain = isMain;
         }
     }

@@ -19,6 +19,8 @@ namespace DatingApp.Business.Services
         {
             using var hmac = new HMACSHA512();
 
+            var mainPhotoDto = userModel.Photos.First(p => p.IsMain);
+
             var newUser = new User(userModel.UserName,
                 hmac.ComputeHash(Encoding.UTF8.GetBytes(userModel.Password)),
                 hmac.Key,
@@ -27,7 +29,8 @@ namespace DatingApp.Business.Services
                 userModel.LookingFor,
                 userModel.City,
                 userModel.Country,
-                userModel.MainPhotoData,
+                mainPhotoDto.PublicId,
+                mainPhotoDto.Url,
                 userModel.BirthDate,
                 userModel.FirstName,
                 userModel.LastName,

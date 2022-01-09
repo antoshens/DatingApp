@@ -9,6 +9,9 @@ RegisterServices(builder.Services, builder.Configuration);
 
 builder.Services.AddAuthentication(builder.Configuration);
 
+var hosturl = builder.Configuration.GetSection("HostUrl").Value;
+
+builder.WebHost.UseKestrel().UseUrls(hosturl);
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -20,7 +23,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseMiddleware<ExceptionMiddleware>();
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
 app.UseRouting();
 

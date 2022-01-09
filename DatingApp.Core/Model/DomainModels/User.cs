@@ -12,8 +12,8 @@ namespace DatingApp.Core.Model
 
         }
 
-        public User(string userName, byte[] passwordHash, byte[] passwordSalt, string email,
-            string interests, string lookingFor, string city, string country, string mainPhotoData,
+        public User(string userName, byte[] passwordHash, byte[] passwordSalt, string email, string interests,
+            string lookingFor, string city, string country, int publicPhotoId, string photoUrl,
             DateTime? birthDate = null, string? firstName = null, string? lastName = null, byte? sex = null)
         {
             if (string.IsNullOrEmpty(userName) || string.IsNullOrWhiteSpace(userName))
@@ -38,7 +38,7 @@ namespace DatingApp.Core.Model
             City = city;
             Country = country;
 
-            AddUserPhoto(mainPhotoData, true);
+            AddUserPhoto(publicPhotoId, photoUrl, true);
 
             if (!sex.HasValue || !Enum.IsDefined(typeof(UserSex), sex.Value))
             {
@@ -49,13 +49,11 @@ namespace DatingApp.Core.Model
             IsDeleted = false;
         }
 
-        public void AddUserPhoto(string photoData, bool isMain)
+        public void AddUserPhoto(int publicId, string url, bool isMain)
         {
-            var photoHash = Encoding.UTF8.GetBytes(photoData);
-
             if (Photos == null) Photos = new List<Photo>();
 
-            Photos.Add(new Photo(photoHash, isMain));
+            Photos.Add(new Photo(publicId, url, isMain));
         }
 
         public int? GetAge()

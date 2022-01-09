@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DatingApp.WebAPI.Controllers
 {
+    [Route("user")]
     public class UserApiController : BaseApiController
     {
         private readonly IUserRepository _userRepo;
@@ -21,19 +22,19 @@ namespace DatingApp.WebAPI.Controllers
            return _userRepo.GetUser<MemberDto>(userId);
         }
 
-        [Route("user/{userId}"), HttpGet]
+        [Route("{userId}"), HttpGet]
         public UserDto GetUserDetails(int userId)
         {
             return _userRepo.GetUser<UserDto>(userId);
         }
 
-        [Route("user/{userId}"), HttpPut]
+        [Route("{userId}"), HttpPut]
         public async Task<UserDto> UpdateUser(int userId, UserDto user)
         {
             return await _userService.UpdateUser(userId, user);
         }
 
-        [Route("user/{userId}"), HttpDelete]
+        [Route("{userId}"), HttpDelete]
         public void DeleteUser(int userId)
         {
             _userService.DeleteUser(userId);
