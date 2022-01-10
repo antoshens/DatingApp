@@ -1,0 +1,15 @@
+C:\Users\Anton\Documents\DatingApp\DatingApp.PhotoService\Domain\bin\Debug\net6.0\PhotoService.Business.deps.json
+C:\Users\Anton\Documents\DatingApp\DatingApp.PhotoService\Domain\bin\Debug\net6.0\PhotoService.Business.dll
+C:\Users\Anton\Documents\DatingApp\DatingApp.PhotoService\Domain\bin\Debug\net6.0\ref\PhotoService.Business.dll
+C:\Users\Anton\Documents\DatingApp\DatingApp.PhotoService\Domain\bin\Debug\net6.0\PhotoService.Business.pdb
+C:\Users\Anton\Documents\DatingApp\DatingApp.PhotoService\Domain\bin\Debug\net6.0\PhotoService.Core.dll
+C:\Users\Anton\Documents\DatingApp\DatingApp.PhotoService\Domain\bin\Debug\net6.0\PhotoService.Core.pdb
+C:\Users\Anton\Documents\DatingApp\DatingApp.PhotoService\Domain\obj\Debug\net6.0\PhotoService.Business.csproj.AssemblyReference.cache
+C:\Users\Anton\Documents\DatingApp\DatingApp.PhotoService\Domain\obj\Debug\net6.0\PhotoService.Business.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Anton\Documents\DatingApp\DatingApp.PhotoService\Domain\obj\Debug\net6.0\PhotoService.Business.AssemblyInfoInputs.cache
+C:\Users\Anton\Documents\DatingApp\DatingApp.PhotoService\Domain\obj\Debug\net6.0\PhotoService.Business.AssemblyInfo.cs
+C:\Users\Anton\Documents\DatingApp\DatingApp.PhotoService\Domain\obj\Debug\net6.0\PhotoService.Business.csproj.CoreCompileInputs.cache
+C:\Users\Anton\Documents\DatingApp\DatingApp.PhotoService\Domain\obj\Debug\net6.0\PhotoService.Business.csproj.CopyComplete
+C:\Users\Anton\Documents\DatingApp\DatingApp.PhotoService\Domain\obj\Debug\net6.0\PhotoService.Business.dll
+C:\Users\Anton\Documents\DatingApp\DatingApp.PhotoService\Domain\obj\Debug\net6.0\ref\PhotoService.Business.dll
+C:\Users\Anton\Documents\DatingApp\DatingApp.PhotoService\Domain\obj\Debug\net6.0\PhotoService.Business.pdb

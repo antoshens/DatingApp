@@ -1,0 +1,17 @@
+C:\Users\Anton\Documents\DatingApp\DatingApp.PhotoService\PhotoService.Infrastructure\bin\Debug\net6.0\PhotoService.Infrastructure.deps.json
+C:\Users\Anton\Documents\DatingApp\DatingApp.PhotoService\PhotoService.Infrastructure\bin\Debug\net6.0\PhotoService.Infrastructure.dll
+C:\Users\Anton\Documents\DatingApp\DatingApp.PhotoService\PhotoService.Infrastructure\bin\Debug\net6.0\ref\PhotoService.Infrastructure.dll
+C:\Users\Anton\Documents\DatingApp\DatingApp.PhotoService\PhotoService.Infrastructure\bin\Debug\net6.0\PhotoService.Infrastructure.pdb
+C:\Users\Anton\Documents\DatingApp\DatingApp.PhotoService\PhotoService.Infrastructure\bin\Debug\net6.0\PhotoService.Business.dll
+C:\Users\Anton\Documents\DatingApp\DatingApp.PhotoService\PhotoService.Infrastructure\bin\Debug\net6.0\PhotoService.Core.dll
+C:\Users\Anton\Documents\DatingApp\DatingApp.PhotoService\PhotoService.Infrastructure\bin\Debug\net6.0\PhotoService.Business.pdb
+C:\Users\Anton\Documents\DatingApp\DatingApp.PhotoService\PhotoService.Infrastructure\bin\Debug\net6.0\PhotoService.Core.pdb
+C:\Users\Anton\Documents\DatingApp\DatingApp.PhotoService\PhotoService.Infrastructure\obj\Debug\net6.0\PhotoService.Infrastructure.csproj.AssemblyReference.cache
+C:\Users\Anton\Documents\DatingApp\DatingApp.PhotoService\PhotoService.Infrastructure\obj\Debug\net6.0\PhotoService.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Anton\Documents\DatingApp\DatingApp.PhotoService\PhotoService.Infrastructure\obj\Debug\net6.0\PhotoService.Infrastructure.AssemblyInfoInputs.cache
+C:\Users\Anton\Documents\DatingApp\DatingApp.PhotoService\PhotoService.Infrastructure\obj\Debug\net6.0\PhotoService.Infrastructure.AssemblyInfo.cs
+C:\Users\Anton\Documents\DatingApp\DatingApp.PhotoService\PhotoService.Infrastructure\obj\Debug\net6.0\PhotoService.Infrastructure.csproj.CoreCompileInputs.cache
+C:\Users\Anton\Documents\DatingApp\DatingApp.PhotoService\PhotoService.Infrastructure\obj\Debug\net6.0\PhotoService.Infrastructure.csproj.CopyComplete
+C:\Users\Anton\Documents\DatingApp\DatingApp.PhotoService\PhotoService.Infrastructure\obj\Debug\net6.0\PhotoService.Infrastructure.dll
+C:\Users\Anton\Documents\DatingApp\DatingApp.PhotoService\PhotoService.Infrastructure\obj\Debug\net6.0\ref\PhotoService.Infrastructure.dll
+C:\Users\Anton\Documents\DatingApp\DatingApp.PhotoService\PhotoService.Infrastructure\obj\Debug\net6.0\PhotoService.Infrastructure.pdb
