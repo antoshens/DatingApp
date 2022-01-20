@@ -1,5 +1,5 @@
-using Domain.EventHandlers;
-using Domain.Events;
+using PhotoService.Business.EventHandlers;
+using PhotoService.Business.Events;
 using MediatR;
 using PhotoService.Core.Bus;
 using PhotoService.Infrastructure;
@@ -39,5 +39,7 @@ app.Run();
 void ConfigureEventBus(IApplicationBuilder app)
 {
     var eventBus = app.ApplicationServices.GetRequiredService<IEventBus>();
+
     eventBus.Subscribe<PhotoAddedEvent, PhotoAddedEventHandler>();
+    eventBus.Subscribe<DeletePhotoEvent, DeletePhotoEventHandler>();
 }
