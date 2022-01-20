@@ -23,7 +23,12 @@ namespace DatingApp.Infrastructure.Bus
 
         public void Publish<T>(T @event) where T : BaseEvent
         {
-            var factory = new ConnectionFactory() { HostName = "localhost" };
+            var factory = new ConnectionFactory()
+            {
+                HostName = "localhost",
+                Port = 5672,
+                DispatchConsumersAsync = true
+            };
 
             using var connection = factory.CreateConnection();
             using var channel = connection.CreateModel();
