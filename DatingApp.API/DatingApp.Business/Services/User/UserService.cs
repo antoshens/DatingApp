@@ -6,8 +6,8 @@ namespace DatingApp.Business.Services
 {
     public class UserService : IUserService
     {
-        private ITokenService _tokenService;
-        private IUserRepository _userRepository;
+        private readonly ITokenService _tokenService;
+        private readonly IUserRepository _userRepository;
 
         public UserService(IUserRepository userRepository, ITokenService tokenService)
         {

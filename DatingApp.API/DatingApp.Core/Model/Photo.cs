@@ -15,7 +15,7 @@ namespace DatingApp.Core.Model
         public int PhotoId { get; private set; }
         public bool IsMain { get; private set; }
         public string Url { get; private set; }
-        public int PublicId { get; private set; }
+        public string PublicId { get; private set; }
         public int UserId { get; private set; }
 
 

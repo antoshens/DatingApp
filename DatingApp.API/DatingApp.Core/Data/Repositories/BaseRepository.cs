@@ -21,9 +21,9 @@ namespace DatingApp.Core.Data.Repositories
             Mapper = mapper;
         }
 
-        public virtual async Task<TEntity?> GetByPrimaryKeyAsync(int primarykey)
+        public virtual async Task<TEntity?> GetByPrimaryKeyAsync(int primaryKey)
         {
-            return await Db.FindAsync<TEntity>(primarykey);
+            return await Db.Set<TEntity>().FirstOrDefaultAsync(x => x.PrimaryKey == primaryKey);
         }
 
         public virtual async Task<TEntity?> GetByPredicateAsync(Expression<Func<TEntity, bool>> predicate)

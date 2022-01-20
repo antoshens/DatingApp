@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace DatingApp.WebAPI.Controllers
 {
     [AllowAnonymous]
-    [Route("auth")]
+    [Route("api/auth")]
     public class AccountApiController : BaseApiController
     {
         private readonly IUserService _userService;

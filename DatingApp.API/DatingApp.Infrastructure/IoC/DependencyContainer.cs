@@ -8,6 +8,10 @@ using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Http;
 using DatingApp.Core.Data.Repositories;
 using DatingApp.Core.Model.AutoMapper;
+using DatingApp.Core.Bus;
+using DatingApp.Infrastructure.Bus;
+using DatingApp.Business.EventHandlers;
+using DatingApp.Business.Events;
 
 namespace DatingApp.Infrastructure.IoC
 {
@@ -34,7 +38,11 @@ namespace DatingApp.Infrastructure.IoC
                 services.AddScoped<DataContext>(_ => dataContextFactory.CreateDataContext(contextOptions));
             }
 
-            services.AddAutoMapper(typeof(AutoMapperProfile).Assembly);
+            // AutoMapper
+            var mapperConfig = AutoMapperProfile.RegisterMappings();
+
+            var mapper = mapperConfig.CreateMapper();
+            services.AddSingleton(mapper);
 
             // DatingApp.Business
             /* Register services */
@@ -42,6 +50,22 @@ namespace DatingApp.Infrastructure.IoC
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<ICurrentUser, CurrentUser>();
+            services.AddScoped<IPhotoRepository, PhotoRepository>();
+            services.AddScoped<IPhotoService, PhotoService>();
+
+            // Event Bus Subscriptions
+            services.AddTransient<PhotoUploadedEventHandler>();
+            services.AddTransient<IEventHandler<PhotoUploadedEvent>, PhotoUploadedEventHandler>();
+
+            services.AddTransient<PhotoDeletedEventHandler>();
+            services.AddTransient<IEventHandler<PhotoDeletedEvent>, PhotoDeletedEventHandler>();
+
+            services.AddSingleton<IEventBus, RabbitMQBus>(sp =>
+            {
+                var scopeFactory = sp.GetRequiredService<IServiceScopeFactory>();
+
+                return new RabbitMQBus(scopeFactory);
+            });
         }
     }
 }

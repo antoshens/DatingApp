@@ -43,20 +43,21 @@ namespace DatingApp.Core.Model.DTOs
         public void ConfigureMapFrom(IMappingExpression<UserDto, User> mapping)
         {
             mapping.ForMember(x => x.Photos,
-               s => s.MapFrom(x => x.Photos
-                      .Select(_ => new Photo(_.PublicId, _.Url, _.IsMain))));
+               s => s.MapFrom(m => m.Photos
+                      .Select(p => new Photo(p.PublicId, p.Url, p.IsMain, new User()))));
         }
 
         public void ConfigureMapTo(IMappingExpression<User, UserDto> mapping)
         {
             mapping.ForMember(x => x.Photos,
                 s => s.MapFrom(x => x.Photos.Select(x => new PhotoDto
-                    {
-                        PublicId = x.PublicId,
-                        Url = x.Url,
-                        IsMain = x.IsMain,
-                    })
-                    .FirstOrDefault()));
+                {
+                    PhotoId = x.PhotoId,
+                    PublicId = x.PublicId,
+                    Url = x.Url,
+                    IsMain = x.IsMain,
+                    UserId = x.UserId
+                })));
         }
     }
 }

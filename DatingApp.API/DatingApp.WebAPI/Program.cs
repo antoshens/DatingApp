@@ -1,3 +1,6 @@
+using DatingApp.Business.EventHandlers;
+using DatingApp.Business.Events;
+using DatingApp.Core.Bus;
 using DatingApp.Infrastructure.IoC;
 using DatingApp.WebAPI.Middlewares;
 using DatingApp.WebAPI.Utils.Extensions;
@@ -9,9 +12,6 @@ RegisterServices(builder.Services, builder.Configuration);
 
 builder.Services.AddAuthentication(builder.Configuration);
 
-var hosturl = builder.Configuration.GetSection("HostUrl").Value;
-
-builder.WebHost.UseKestrel().UseUrls(hosturl);
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -23,7 +23,9 @@ if (app.Environment.IsDevelopment())
 
 app.UseMiddleware<ExceptionMiddleware>();
 
-//app.UseHttpsRedirection();
+ConfigureEventBus(app);
+
+app.UseHttpsRedirection();
 
 app.UseRouting();
 
@@ -48,4 +50,12 @@ static void RegisterServices(IServiceCollection services, IConfiguration configu
 
     // Register services using DI container
     DependencyContainer.RegisterServices(services, configuration);
+}
+
+static void ConfigureEventBus(IApplicationBuilder app)
+{
+    var eventBus = app.ApplicationServices.GetRequiredService<IEventBus>();
+
+    eventBus.Subscribe<PhotoUploadedEvent, PhotoUploadedEventHandler>();
+    eventBus.Subscribe<PhotoDeletedEvent, PhotoDeletedEventHandler>();
 }

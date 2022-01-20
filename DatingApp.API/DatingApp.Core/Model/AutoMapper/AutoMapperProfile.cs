@@ -25,23 +25,25 @@ namespace DatingApp.Core.Model.AutoMapper
             internal MapDirection Direction { get; set; } = 0;
         }
 
-        public AutoMapperProfile()
+        public static MapperConfiguration RegisterMappings()
         {
             var assemblyTypes = GetAllTypesImplementingOpenGenericType(typeof(AutoMapperProfile).Assembly);
 
             var mapstoCreate = GetMappingTypesInfo(assemblyTypes);
 
-            foreach(var map in mapstoCreate)
+            var createMapFrom = typeof(IProfileExpression).GetMethod("CreateMap", new Type[0]);
+            var createMapTo = typeof(IProfileExpression).GetMethod("CreateMap", new Type[0]);
+
+            var config = new MapperConfiguration(cfg =>
             {
-                var config = new MapperConfiguration(cfg => {
+                foreach (var map in mapstoCreate)
+                {
                     if (map.ModelInstance is null)
                     {
                         cfg.CreateMap(map.Source, map.Destination);
                     }
                     else if (map.Direction == MapDirection.MapFrom)
                     {
-                        var createMapFrom = typeof(IProfileExpression).GetMethod("CreateMap", new Type[0]);
-
                         var genericCreateMap = createMapFrom.MakeGenericMethod(map.Source, map.Destination);
                         var mapConfiguration = genericCreateMap.Invoke(cfg, null);
 
@@ -50,16 +52,16 @@ namespace DatingApp.Core.Model.AutoMapper
                     }
                     else if (map.Direction == MapDirection.MapTo)
                     {
-                        var createMapTo = typeof(IProfileExpression).GetMethod("CreateMap", new Type[0]);
-
                         var genericCreateMap = createMapTo.MakeGenericMethod(map.Source, map.Destination);
                         var mapConfiguration = genericCreateMap.Invoke(cfg, null);
 
                         var configureMapTo = typeof(IMapTo<,>).MakeGenericType(map.Source, map.Destination).GetMethod("ConfigureMapTo");
                         configureMapTo.Invoke(map.ModelInstance, new[] { mapConfiguration });
                     }
-                });
-            }
+                }
+            });
+
+            return config;
         }
 
         private static IEnumerable<AssemblyTypes> GetAllTypesImplementingOpenGenericType(Assembly assembly)
@@ -72,7 +74,7 @@ namespace DatingApp.Core.Model.AutoMapper
                    select new AssemblyTypes { Type = t, Interface = i };
         }
 
-        private IEnumerable<MappingType> GetMappingTypesInfo(IEnumerable<AssemblyTypes> assemblyTypes)
+        private static IEnumerable<MappingType> GetMappingTypesInfo(IEnumerable<AssemblyTypes> assemblyTypes)
         {
 
             var mappingTypes = assemblyTypes.Select(t =>

@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DatingApp.WebAPI.Controllers
 {
-    [Route("user")]
+    [Route("api/user")]
     public class UserApiController : BaseApiController
     {
         private readonly IUserRepository _userRepo;
