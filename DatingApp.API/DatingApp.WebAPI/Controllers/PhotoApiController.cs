@@ -1,6 +1,9 @@
 ﻿using DatingApp.Business.Events;
 using DatingApp.Core.Bus;
+using DatingApp.WebAPI.Utils;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OData.Formatter;
+using Microsoft.AspNetCore.OData.Query;
 
 namespace DatingApp.WebAPI.Controllers
 {
@@ -40,13 +43,32 @@ namespace DatingApp.WebAPI.Controllers
         }
 
         [Route("remove"), HttpDelete]
-        public async Task RemovePhoto(PhotoDto photoModel)
+        public void RemovePhoto(PhotoDto photoModel)
         {
             _eventBus.Publish(new DeletePhotoEvent
             {
                 PhotoId = photoModel.PhotoId,
                 PublicId = photoModel.PublicId
             });
+        }
+
+        [Route("userPhotos"), HttpGet]
+        [EnableQuery]
+        public IEnumerable<PhotoDto> GetPhotos([FromODataUri] int userId)
+        {
+            var currentUserId = _user.GetCurrentUserId();
+
+            if (!currentUserId.HasValue)
+            {
+                throw new ArgumentException("Unable to indentify a user");
+            }
+
+            if (currentUserId != userId)
+            {
+                throw new ForbiddenRequestException();
+            }
+
+            return _photoService.GetUserPhotos(userId);
         }
     }
 }

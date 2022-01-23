@@ -20,7 +20,7 @@ namespace DatingApp.WebAPI.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<LogedUserDto> Login(LoginUserDto model)
+        public async Task<LoggedUserDto> Login(LoginUserDto model)
         {
             return await _userService.LoginUser(model);
         }

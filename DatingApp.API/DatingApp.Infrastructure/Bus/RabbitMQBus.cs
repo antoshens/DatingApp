@@ -1,9 +1,11 @@
 ﻿using DatingApp.Core.Bus;
 using DatingApp.Core.Events;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
+using RabbitMQ.Client.Exceptions;
 using System.Text;
 
 namespace DatingApp.Infrastructure.Bus
@@ -13,12 +15,14 @@ namespace DatingApp.Infrastructure.Bus
         private readonly Dictionary<string, List<Type>> _handlers;
         private readonly List<Type> _eventTypes;
         private readonly IServiceScopeFactory _serviceScopeFactory;
+        private readonly ILogger<RabbitMQBus> _logger;
 
-        public RabbitMQBus(IServiceScopeFactory serviceScopeFactory)
+        public RabbitMQBus(IServiceScopeFactory serviceScopeFactory, ILogger<RabbitMQBus> logger)
         {
             _serviceScopeFactory = serviceScopeFactory;
             _handlers = new Dictionary<string, List<Type>>();
             _eventTypes = new List<Type>();
+            _logger = logger;
         }
 
         public void Publish<T>(T @event) where T : BaseEvent
@@ -80,17 +84,24 @@ namespace DatingApp.Infrastructure.Bus
                 DispatchConsumersAsync = true
             };
 
-            var connection = factory.CreateConnection();
-            var channel = connection.CreateModel();
+            try
+            {
+                var connection = factory.CreateConnection();
+                var channel = connection.CreateModel();
 
-            var eventName = typeof(T).Name;
+                var eventName = typeof(T).Name;
 
-            channel.QueueDeclare(eventName, false, false, false, null);
+                channel.QueueDeclare(eventName, false, false, false, null);
 
-            var consumer = new AsyncEventingBasicConsumer(channel);
-            consumer.Received += Consumer_Received;
+                var consumer = new AsyncEventingBasicConsumer(channel);
+                consumer.Received += Consumer_Received;
 
-            channel.BasicConsume(eventName, true, consumer);
+                channel.BasicConsume(eventName, true, consumer);
+            }
+            catch (BrokerUnreachableException ex)
+            {
+                _logger.LogError(ex.Message);
+            }
         }
 
         private async Task Consumer_Received(object sender, BasicDeliverEventArgs e)
@@ -104,6 +115,7 @@ namespace DatingApp.Infrastructure.Bus
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex.Message);
             }
         }
 

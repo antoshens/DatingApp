@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace DatingApp.Core.Model.DTOs
 {
-    public class LogedUserDto
+    public class LoggedUserDto
     {
         [Required]
         public string UserName { get; set; }

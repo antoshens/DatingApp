@@ -63,8 +63,9 @@ namespace DatingApp.Infrastructure.IoC
             services.AddSingleton<IEventBus, RabbitMQBus>(sp =>
             {
                 var scopeFactory = sp.GetRequiredService<IServiceScopeFactory>();
+                var logger = sp.GetRequiredService<ILogger<RabbitMQBus>>();
 
-                return new RabbitMQBus(scopeFactory);
+                return new RabbitMQBus(scopeFactory, logger);
             });
         }
     }

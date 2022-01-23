@@ -4,6 +4,7 @@ using DatingApp.Core.Bus;
 using DatingApp.Infrastructure.IoC;
 using DatingApp.WebAPI.Middlewares;
 using DatingApp.WebAPI.Utils.Extensions;
+using Microsoft.AspNetCore.OData;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,13 +38,21 @@ app.UseAuthentication();
 
 app.UseAuthorization();
 
+app.UseMiddleware<RequestLoggingMiddleware>();
+
 app.MapControllers();
 
 app.Run();
 
 static void RegisterServices(IServiceCollection services, IConfiguration configuration)
 {
-    services.AddControllers();
+    services.AddControllers().AddOData(options => options
+        .Filter()
+        .SetMaxTop(100)
+        .SkipToken()
+        .Count()
+        .OrderBy());
+
     // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
     services.AddEndpointsApiExplorer();
     services.AddSwaggerGen();

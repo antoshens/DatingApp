@@ -42,7 +42,7 @@ namespace DatingApp.Business.Services
             return userModel;
         }
 
-        public async Task<LogedUserDto> LoginUser(LoginUserDto usermModel)
+        public async Task<LoggedUserDto> LoginUser(LoginUserDto usermModel)
         {
             var existedUser = await _userRepository.GetByPredicateAsync(u => u.UserName == usermModel.UserName
                                                     || u.Email == usermModel.UserName);
@@ -61,7 +61,7 @@ namespace DatingApp.Business.Services
                 throw new ArgumentNullException("Login or Password is incorrect");
             }
 
-            return new LogedUserDto
+            return new LoggedUserDto
             {
                 UserName = usermModel.UserName,
                 Token = _tokenService.CreateToken(existedUser)
