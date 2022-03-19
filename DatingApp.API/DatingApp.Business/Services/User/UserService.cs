@@ -134,5 +134,12 @@ namespace DatingApp.Business.Services
 
             return likedUsers;
         }
+
+        public Task<IEnumerable<UserDto>> GetLikedByUsers(int userId)
+        {
+            var likedByUsers = _userRepository.GetLikedByUsers(userId);
+
+            return likedByUsers;
+        }
     }
 }

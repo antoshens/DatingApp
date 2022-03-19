@@ -50,6 +50,18 @@ namespace DatingApp.Core.Data.Repositories
             return likedUsersModel;
         }
 
+        public async Task<IEnumerable<UserDto>> GetLikedByUsers(int sourceUserId)
+        {
+            var user = await Db.Users
+                .Include(x => x.LikedByUsers.Select(_ => _.LikedUser))
+                .Include(x => x.Photos)
+                .FirstOrDefaultAsync(u => u.UserId == sourceUserId && !u.IsDeleted);
+
+            var likedByUsersModel = user?.LikedByUsers.Select(x => Mapper.Map<UserDto>(x.SourceUser));
+
+            return likedByUsersModel;
+        }
+
         public UserDto UpdatUser(User user)
         {
             Db.Entry(user).State = EntityState.Modified;

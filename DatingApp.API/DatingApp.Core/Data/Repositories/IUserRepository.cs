@@ -12,5 +12,6 @@ namespace DatingApp.Core.Data.Repositories
         UserDto AddUser(User user);
         void DeleteUser(User user);
         Task<IEnumerable<UserDto>> GetLikedUsers(int sourceUserId);
+        Task<IEnumerable<UserDto>> GetLikedByUsers(int sourceUserId);
     }
 }

@@ -39,5 +39,29 @@ namespace DatingApp.WebAPI.Controllers
         {
             _userService.DeleteUser(userId);
         }
+
+        [Route("likeUser/{userId}/{likedUserId}"), HttpPost]
+        public void LikeUser(int userId, int likeduserId)
+        {
+            _userService.LikeUser(userId, likeduserId);
+        }
+
+        [Route("unlikeUser/{userId}/{unlikedUserId}"), HttpPost]
+        public void UnkikeUser(int userId, int unlikedUserId)
+        {
+            _userService.UnlikeUser(userId, unlikedUserId);
+        }
+
+        [Route("likedUsers/{userId}"), HttpGet]
+        public async Task<IEnumerable<UserDto>> GetLikedUsers(int userId)
+        {
+            return await _userService.GetLikedUsers(userId);
+        }
+
+        [Route("likedByUsers/{userId}"), HttpGet]
+        public async Task<IEnumerable<UserDto>> GetLikedByUsers(int userId)
+        {
+            return await _userService.GetLikedByUsers(userId);
+        }
     }
 }

@@ -9,5 +9,6 @@
         UserLike LikeUser(int sourceUserId, int likedUserId);
         void UnlikeUser(int sourceUserId, int inlikedUserId);
         Task<IEnumerable<UserDto>> GetLikedUsers(int userId);
+        Task<IEnumerable<UserDto>> GetLikedByUsers(int userId);
     }
 }
