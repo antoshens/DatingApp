@@ -14,11 +14,6 @@
             IsDeleted = false;
         }
 
-        public void LikeUser(int likedUserId)
-        {
-            LikedUserId = likedUserId;
-        }
-
         public void UnlikeUser()
         {
             IsDeleted = true;

@@ -113,5 +113,26 @@ namespace DatingApp.Business.Services
 
             await _userRepository.SaveAllAsync();
         }
+
+        public UserLike LikeUser(int sourceUserId, int likedUserId)
+        {
+            var user = _userRepository.GetFullUser(sourceUserId);
+
+            return user.LikeUser(likedUserId);
+        }
+
+        public void UnlikeUser(int sourceUserId, int inlikedUserId)
+        {
+            var user = _userRepository.GetFullUser(sourceUserId);
+
+            user.UnlikeUser(inlikedUserId);
+        }
+
+        public Task<IEnumerable<UserDto>> GetLikedUsers(int userId)
+        {
+            var likedUsers = _userRepository.GetLikedUsers(userId);
+
+            return likedUsers;
+        }
     }
 }

@@ -106,5 +106,33 @@ namespace DatingApp.Core.Model
                 UserName = newUserName;
             }
         }
+
+        public UserLike LikeUser(int likedUserId)
+        {
+            if (LikedUsers == null) LikedUsers = new List<UserLike>();
+
+            var userLike = new UserLike(UserId, likedUserId);
+
+            LikedUsers.Add(userLike);
+
+            return userLike;
+        }
+
+        public void UnlikeUser(int unlikedUserId)
+        {
+            if (LikedUsers == null)
+            {
+                throw new ArgumentException("There is no users liked");
+            }
+
+            var likedUser = LikedUsers.FirstOrDefault(u => u.LikedUserId == unlikedUserId && !u.IsDeleted);
+
+            if (likedUser is null)
+            {
+                throw new ArgumentNullException("No user found.");
+            }
+
+            likedUser.UnlikeUser();
+        }
     }
 }

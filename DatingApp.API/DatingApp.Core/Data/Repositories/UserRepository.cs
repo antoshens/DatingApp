@@ -31,9 +31,23 @@ namespace DatingApp.Core.Data.Repositories
         {
             var user = GetQueryByExpression(_ => _.UserId == userId)
                 .Include(x => x.Photos)
+                .Include(x => x.LikedUsers)
+                .Include(x => x.LikedByUsers)
                 .FirstOrDefault();
 
             return user;
+        }
+
+        public async Task<IEnumerable<UserDto>> GetLikedUsers(int sourceUserId)
+        {
+            var user = await Db.Users
+                .Include(x => x.LikedUsers.Select(_ => _.LikedUser))
+                .Include(x => x.Photos)
+                .FirstOrDefaultAsync(u => u.UserId == sourceUserId && !u.IsDeleted);
+
+            var likedUsersModel = user?.LikedUsers.Select(x => Mapper.Map<UserDto>(x.LikedUser));
+
+            return likedUsersModel;
         }
 
         public UserDto UpdatUser(User user)
