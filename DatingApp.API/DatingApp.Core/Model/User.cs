@@ -30,5 +30,7 @@ namespace DatingApp.Core.Model
         // Foreign Keys (FK)
         public AuditInfo AuditInfo { get; set; } // 1:1 (FK) AuditInfo.AuditInfoId
         public ICollection<Photo> Photos { get; private set; } // 1:M (FK) Photo.PhotoId
+        public ICollection<UserLike> LikedByUsers { get; set; } // M:1 (FK) UserLike.UserLikeId
+        public ICollection<UserLike> LikedUsers { get; set; } // 1:M (FK) UserLike.UserLikeId
     }
 }

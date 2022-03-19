@@ -32,12 +32,33 @@ namespace DatingApp.Core.Data
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<AuditInfo> AuditInfoes { get; set; }
         public virtual DbSet<Photo> Photos { get; set; }
+        public virtual DbSet<UserLike> UserLikes { get; set; }
 
         /* 
          * ===============================================================
          * ===================== Override SaveChanges ====================
          * ===============================================================
          */
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+
+            builder.Entity<UserLike>()
+                .HasKey(k => new { k.SourceUserId, k.LikedUserId });
+
+            builder.Entity<UserLike>()
+                .HasOne(s => s.SourceUser)
+                .WithMany(l => l.LikedUsers)
+                .HasForeignKey(s => s.SourceUserId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            builder.Entity<UserLike>()
+                .HasOne(s => s.LikedUser)
+                .WithMany(l => l.LikedByUsers)
+                .HasForeignKey(s => s.LikedUserId)
+                .OnDelete(DeleteBehavior.NoAction);
+        }
+
         public override int SaveChanges()
         {
             IEnumerable<EntityEntry<IEntityAudit>> newEntities;
