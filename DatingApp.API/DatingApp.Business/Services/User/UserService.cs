@@ -68,6 +68,20 @@ namespace DatingApp.Business.Services
             };
         }
 
+        public async Task<bool> LogoutUser(int userId)
+        {
+            var existedUser = await _userRepository.GetByPredicateAsync(u => u.UserId == userId);
+
+            if (existedUser == null)
+            {
+                return false;
+            }
+
+
+
+            return true;
+        }
+
         private bool CompareHashes(byte[] hash1, byte[] hash2)
         {
             if (hash1.Length != hash2.Length)
@@ -118,14 +132,14 @@ namespace DatingApp.Business.Services
         {
             var user = _userRepository.GetFullUser(sourceUserId);
 
-            return user.LikeUser(likedUserId);
+            return _userRepository.LikeUser(user, likedUserId);
         }
 
         public void UnlikeUser(int sourceUserId, int inlikedUserId)
         {
             var user = _userRepository.GetFullUser(sourceUserId);
 
-            user.UnlikeUser(inlikedUserId);
+            _userRepository.UnlikeUser(user, inlikedUserId);
         }
 
         public Task<IEnumerable<UserDto>> GetLikedUsers(int userId)

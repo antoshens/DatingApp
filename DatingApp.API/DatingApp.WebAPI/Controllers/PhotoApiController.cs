@@ -26,7 +26,7 @@ namespace DatingApp.WebAPI.Controllers
         {
             var buffer = await _photoService.CreatePhotoByteArrayAsync(file);
 
-            var currentUserId = _user.GetCurrentUserId();
+            var currentUserId = _user.UserId;
 
             if (!currentUserId.HasValue)
             {
@@ -56,7 +56,7 @@ namespace DatingApp.WebAPI.Controllers
         [EnableQuery]
         public IEnumerable<PhotoDto> GetPhotos([FromODataUri] int userId)
         {
-            var currentUserId = _user.GetCurrentUserId();
+            var currentUserId = _user.UserId;
 
             if (!currentUserId.HasValue)
             {

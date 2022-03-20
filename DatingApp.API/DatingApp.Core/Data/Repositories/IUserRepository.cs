@@ -13,5 +13,7 @@ namespace DatingApp.Core.Data.Repositories
         void DeleteUser(User user);
         Task<IEnumerable<UserDto>> GetLikedUsers(int sourceUserId);
         Task<IEnumerable<UserDto>> GetLikedByUsers(int sourceUserId);
+        UserLike LikeUser(User user, int likedUserId);
+        void UnlikeUser(User user, int likedUserId);
     }
 }

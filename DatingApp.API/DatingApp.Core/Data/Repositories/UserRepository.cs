@@ -68,6 +68,8 @@ namespace DatingApp.Core.Data.Repositories
 
             var userDto = this.Mapper.Map<User, UserDto>(user);
 
+            Db.SaveChanges();
+
             return userDto;
         }
 
@@ -77,12 +79,32 @@ namespace DatingApp.Core.Data.Repositories
 
             var userDto = this.Mapper.Map<User, UserDto>(user);
 
+            Db.SaveChanges();
+
             return userDto;
         }
 
         public void DeleteUser(User user)
         {
             Db.Users.Remove(user);
+
+            Db.SaveChanges();
+        }
+
+        public UserLike LikeUser(User user, int likedUserId)
+        {
+            var likedUser = user.LikeUser(likedUserId);
+
+            Db.SaveChanges();
+
+            return likedUser;
+        }
+
+        public void UnlikeUser(User user, int likedUserId)
+        {
+            user.UnlikeUser(likedUserId);
+
+            Db.SaveChanges();
         }
     }
 }

@@ -28,13 +28,18 @@ namespace DatingApp.Business.Services
             return currentUser;
         }
 
-        public int? GetCurrentUserId()
+        public int UserId
         {
-            var userPrincipal = _httpContextAccessor.HttpContext?.User;
+            get
+            {
+                var userPrincipal = _httpContextAccessor.HttpContext?.User;
 
-            var currentUserId = _tokenService.GetCurrentUserId(userPrincipal);
+                if (userPrincipal is null) return 0;
 
-            return currentUserId;
+                var currentUserId = _tokenService.GetCurrentUserId(userPrincipal);
+
+                return currentUserId ?? 0;
+            }
         }
     }
 }
