@@ -12,6 +12,7 @@ using DatingApp.Core.Bus;
 using DatingApp.Infrastructure.Bus;
 using DatingApp.Business.EventHandlers;
 using DatingApp.Business.Events;
+using DatingApp.Business.Services.Message;
 
 namespace DatingApp.Infrastructure.IoC
 {
@@ -52,6 +53,8 @@ namespace DatingApp.Infrastructure.IoC
             services.AddScoped<ICurrentUser, CurrentUser>();
             services.AddScoped<IPhotoRepository, PhotoRepository>();
             services.AddScoped<IPhotoService, PhotoService>();
+            services.AddScoped<IMessageRepository, MessageRepository>();
+            services.AddScoped<IMessageService, MessageService>();
 
             // Event Bus Subscriptions
             services.AddTransient<PhotoUploadedEventHandler>();
