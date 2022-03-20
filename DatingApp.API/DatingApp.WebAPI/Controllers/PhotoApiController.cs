@@ -26,19 +26,12 @@ namespace DatingApp.WebAPI.Controllers
         {
             var buffer = await _photoService.CreatePhotoByteArrayAsync(file);
 
-            var currentUserId = _user.UserId;
-
-            if (!currentUserId.HasValue)
-            {
-                throw new ArgumentException("Unable to indentify a user");
-            }
-
             _eventBus.Publish(new PhotoAddedEvent
             {
                 File = buffer,
                 FileName = file.FileName,
                 IsMain = isMain,
-                UserId = currentUserId.Value
+                UserId = _user.UserId
             });
         }
 
@@ -56,14 +49,7 @@ namespace DatingApp.WebAPI.Controllers
         [EnableQuery]
         public IEnumerable<PhotoDto> GetPhotos([FromODataUri] int userId)
         {
-            var currentUserId = _user.UserId;
-
-            if (!currentUserId.HasValue)
-            {
-                throw new ArgumentException("Unable to indentify a user");
-            }
-
-            if (currentUserId != userId)
+            if (_user.UserId != userId)
             {
                 throw new ForbiddenRequestException();
             }

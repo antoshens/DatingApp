@@ -37,10 +37,10 @@
             }
             finally
             {
-                var currentUserId = currentuser.GetCurrentUserId();
+                var currentUserId = currentuser.UserId;
                 var method = context.Request.Method;
                 var url = context.Request.Path;
-                var user = !currentUserId.HasValue ? "Anonymous user" : $"User {currentUserId}";
+                var user = currentUserId == 0 ? "Anonymous user" : $"User {currentUserId}";
 
                 context.Request.EnableBuffering();
                 context.Request.Body.Position = 0;
