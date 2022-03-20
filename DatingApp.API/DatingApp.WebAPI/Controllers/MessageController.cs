@@ -1,6 +1,8 @@
 ﻿using DatingApp.Business.Services.Message;
 using DatingApp.Core.Model;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OData.Formatter;
+using Microsoft.AspNetCore.OData.Query;
 
 namespace DatingApp.WebAPI.Controllers
 {
@@ -39,8 +41,9 @@ namespace DatingApp.WebAPI.Controllers
             return newMessage;
         }
 
-        [Route("thread/{recepientId}"), HttpGet]
-        public async Task<IEnumerable<GetMessageDto>> GetThread(int recepientId)
+        [Route("thread"), HttpGet]
+        [EnableQuery]
+        public async Task<IEnumerable<GetMessageDto>> GetThread([FromODataUri]int recepientId)
         {
             var thread = await _messageService.GetMessageThread(_currentUser.UserId, recepientId);
 
