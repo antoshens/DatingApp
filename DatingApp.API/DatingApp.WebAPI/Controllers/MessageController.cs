@@ -33,7 +33,7 @@ namespace DatingApp.WebAPI.Controllers
             _messageService.DeleteMessage(message, messageDeletionOption);
         }
 
-        [Route("edit/{messageId}"), HttpPatch]
+        [Route("edit/{messageId}"), HttpPut]
         public GetMessageDto EditMessage(int messageId, string content)
         {
             var newMessage = _messageService.EditMessage(messageId, content);

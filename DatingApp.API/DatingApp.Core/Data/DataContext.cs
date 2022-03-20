@@ -62,11 +62,13 @@ namespace DatingApp.Core.Data
             builder.Entity<Message>()
                 .HasOne(s => s.SenderUser)
                 .WithMany(l => l.SentMessages)
+                .HasForeignKey(s => s.SenderId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             builder.Entity<Message>()
                 .HasOne(s => s.RecipientUser)
                 .WithMany(l => l.ReceivedMessages)
+                .HasForeignKey(s => s.RecipientId)
                 .OnDelete(DeleteBehavior.Restrict);
         }
 
