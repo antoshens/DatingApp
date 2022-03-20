@@ -32,5 +32,7 @@ namespace DatingApp.Core.Model
         public ICollection<Photo> Photos { get; private set; } // 1:M (FK) Photo.PhotoId
         public ICollection<UserLike> LikedByUsers { get; set; } // M:1 (FK) UserLike.UserLikeId
         public ICollection<UserLike> LikedUsers { get; set; } // 1:M (FK) UserLike.UserLikeId
+        public ICollection<Message> SentMessages { get; set; } // 1:M (FK) Message.MessageId
+        public ICollection<Message> ReceivedMessages { get; set; } // M:1 (FK) Message.MessageId
     }
 }

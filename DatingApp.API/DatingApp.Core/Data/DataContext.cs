@@ -33,10 +33,11 @@ namespace DatingApp.Core.Data
         public virtual DbSet<AuditInfo> AuditInfoes { get; set; }
         public virtual DbSet<Photo> Photos { get; set; }
         public virtual DbSet<UserLike> UserLikes { get; set; }
+        public virtual DbSet<Message> Messages { get; set; }
 
         /* 
          * ===============================================================
-         * ===================== Override SaveChanges ====================
+         * ======================= Override methods ======================
          * ===============================================================
          */
         protected override void OnModelCreating(ModelBuilder builder)
@@ -57,6 +58,16 @@ namespace DatingApp.Core.Data
                 .WithMany(l => l.LikedByUsers)
                 .HasForeignKey(s => s.LikedUserId)
                 .OnDelete(DeleteBehavior.NoAction);
+
+            builder.Entity<Message>()
+                .HasOne(s => s.SenderUser)
+                .WithMany(l => l.SentMessages)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<Message>()
+                .HasOne(s => s.RecipientUser)
+                .WithMany(l => l.ReceivedMessages)
+                .OnDelete(DeleteBehavior.Restrict);
         }
 
         public override int SaveChanges()
