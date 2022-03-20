@@ -33,12 +33,9 @@
             return true;
         }
 
-        public GetMessageDto EditMessage(GetMessageDto message, string newContent)
+        public GetMessageDto EditMessage(int messageId, string newContent)
         {
-            if (message is null)
-                throw new ArgumentNullException(nameof(message));
-
-            var newMessage = _messageRepository.EditMessage(message.Id, newContent);
+            var newMessage = _messageRepository.EditMessage(messageId, newContent);
 
             return newMessage;
         }

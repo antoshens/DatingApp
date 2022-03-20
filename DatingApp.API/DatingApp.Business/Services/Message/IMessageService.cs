@@ -4,7 +4,7 @@
     {
         void CreateMessage(int senderId, SendMessageDto newMessage);
         bool DeleteMessage(GetMessageDto message, MessageDeletionOption messageDeletionOption);
-        GetMessageDto EditMessage(GetMessageDto oldMessage, string newContent);
+        GetMessageDto EditMessage(int messageId, string newContent);
         Task<IEnumerable<GetMessageDto>> GetMessageThread(int senderId, int recepientId);
     }
 }
