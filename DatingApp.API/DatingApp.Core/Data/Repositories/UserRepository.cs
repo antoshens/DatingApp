@@ -20,6 +20,11 @@ namespace DatingApp.Core.Data.Repositories
         {
             var domainUser = _userManager.Users.SingleOrDefault(u => u.Id == userId);
 
+            if (domainUser is null)
+            {
+                throw new ArgumentException(nameof(userId));
+            }
+
             var userModel = this.Mapper.Map<User, T>(domainUser);
 
             return userModel;
@@ -93,7 +98,10 @@ namespace DatingApp.Core.Data.Repositories
         {
             var result = await _userManager.CreateAsync(user, password);
 
-            if (!result.Succeeded) return null;
+            if (!result.Succeeded)
+            {
+                throw new Exception(result.Errors.First().Description);
+            }
 
             var userDto = this.Mapper.Map<User, UserDto>(user);
 

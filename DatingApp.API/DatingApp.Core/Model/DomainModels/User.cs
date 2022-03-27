@@ -13,7 +13,7 @@ namespace DatingApp.Core.Model
         }
 
         public User(string userName, string email, string interests,
-            string lookingFor, string city, string country, bool isAvatar, string publicPhotoId, string photoUrl,
+            string lookingFor, string city, string country, string publicPhotoId, string photoUrl,
             DateTime? birthDate = null, string? firstName = null, string? lastName = null, byte? sex = null)
         {
             if (string.IsNullOrEmpty(userName) || string.IsNullOrWhiteSpace(userName))
@@ -31,7 +31,10 @@ namespace DatingApp.Core.Model
             City = city;
             Country = country;
 
-            if (isAvatar) AddUserPhoto(publicPhotoId, photoUrl, true, this);
+            if (!String.IsNullOrEmpty(publicPhotoId) && !String.IsNullOrEmpty(photoUrl))
+            {
+                AddUserPhoto(publicPhotoId, photoUrl, true, this);
+            }
 
             if (!sex.HasValue || !Enum.IsDefined(typeof(UserSex), sex.Value))
             {

@@ -1,6 +1,5 @@
 ﻿using DatingApp.Business.Services.Authentication;
 using Microsoft.AspNetCore.Identity;
-using System.Security.Cryptography;
 
 namespace DatingApp.Business.Services
 {
@@ -17,11 +16,12 @@ namespace DatingApp.Business.Services
             _signInManager = signInManager;
         }
 
-        public async Task<UserDto> RegisterNewUser(UserDto userModel)
+        public async Task<BusinessResponse<UserDto>> RegisterNewUser(UserDto userModel)
         {
-            using var hmac = new HMACSHA512();
-
             var mainPhotoDto = userModel.Photos.FirstOrDefault(p => p.IsMain);
+
+            var publicPhotoId = mainPhotoDto?.PublicId ?? "";
+            var photoUrl = mainPhotoDto?.PublicId ?? "";
 
             var newUser = new User(userModel.UserName,
                 userModel.Email,
@@ -29,20 +29,33 @@ namespace DatingApp.Business.Services
                 userModel.LookingFor,
                 userModel.City,
                 userModel.Country,
-                mainPhotoDto is null,
-                mainPhotoDto?.PublicId ?? "",
-                mainPhotoDto?.Url ?? "",
+                publicPhotoId,
+                photoUrl,
                 userModel.BirthDate,
                 userModel.FirstName,
                 userModel.LastName,
                 userModel.Sex);
 
-            var result = await _userRepository.AddUser(newUser, userModel.Password);
+            try
+            {
+                var result = await _userRepository.AddUser(newUser, userModel.Password);
 
-            return result;
+                return new BusinessResponse<UserDto>
+                {
+                    Data = result
+                };
+            }
+            catch (Exception ex)
+            {
+                return new BusinessResponse<UserDto>
+                {
+                    Failed = true,
+                    FailedMessage = ex.Message
+                };
+            }
         }
 
-        public async Task<LoggedUserDto> LoginUser(LoginUserDto userModel)
+        public async Task<BusinessResponse<LoggedUserDto>> LoginUser(LoginUserDto userModel)
         {
             var existedUser = await _userRepository.GetByPredicateAsync(u => u.UserName == userModel.UserName
                                                     || u.Email == userModel.UserName);
@@ -54,12 +67,22 @@ namespace DatingApp.Business.Services
 
             var result = await _signInManager.CheckPasswordSignInAsync(existedUser, userModel.Password, false);
 
-            if (!result.Succeeded) return null;
-
-            return new LoggedUserDto
+            if (!result.Succeeded)
             {
-                UserName = userModel.UserName,
-                Token = _tokenService.CreateToken(existedUser)
+                return new BusinessResponse<LoggedUserDto>
+                {
+                    Failed = true,
+                    FailedMessage = "Login or Password is incorrect"
+                };
+            }
+
+            return new BusinessResponse<LoggedUserDto>
+            {
+                Data = new LoggedUserDto
+                {
+                    UserName = userModel.UserName,
+                    Token = _tokenService.CreateToken(existedUser)
+                }
             };
         }
 
@@ -87,7 +110,7 @@ namespace DatingApp.Business.Services
         {
             var user = _userRepository.GetFullUser(userId);
 
-            _userRepository.DeleteUser(user);
+            await _userRepository.DeleteUser(user);
 
             await _userRepository.SaveAllAsync();
         }

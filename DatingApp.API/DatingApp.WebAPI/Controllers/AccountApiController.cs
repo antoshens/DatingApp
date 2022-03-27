@@ -18,7 +18,7 @@ namespace DatingApp.WebAPI.Controllers
         {
             var result = await _userService.RegisterNewUser(model);
 
-            return result is null ? BadRequest() : Ok(result);
+            return result.Failed ? BadRequest(result.FailedMessage) : Ok(result.Data);
         }
 
         [HttpPost("login")]
@@ -26,7 +26,7 @@ namespace DatingApp.WebAPI.Controllers
         {
             var result = await _userService.LoginUser(model);
 
-            return result is null ? Unauthorized() : Ok(result);
+            return result.Failed ? Unauthorized() : Ok(result.Data);
         }
     }
 }
