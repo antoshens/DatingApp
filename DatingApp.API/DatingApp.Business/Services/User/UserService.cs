@@ -1,25 +1,25 @@
 ﻿using DatingApp.Business.Services.Authentication;
+using Microsoft.AspNetCore.Identity;
 using System.Security.Cryptography;
-using System.Text;
 
 namespace DatingApp.Business.Services
 {
     public class UserService : IUserService
     {
-        private readonly ITokenService _tokenService;
         private readonly IUserRepository _userRepository;
+        private readonly SignInManager<User> _signInManager;
 
-        public UserService(IUserRepository userRepository, ITokenService tokenService)
+        public UserService(IUserRepository userRepository, SignInManager<User> signInManager)
         {
-            _tokenService = tokenService;
             _userRepository = userRepository;
+            _signInManager = signInManager;
         }
 
         public async Task<UserDto> RegisterNewUser(UserDto userModel)
         {
             using var hmac = new HMACSHA512();
 
-            var mainPhotoDto = userModel.Photos.First(p => p.IsMain);
+            var mainPhotoDto = userModel.Photos.FirstOrDefault(p => p.IsMain);
 
             var newUser = new User(userModel.UserName,
                 userModel.Email,
@@ -27,33 +27,36 @@ namespace DatingApp.Business.Services
                 userModel.LookingFor,
                 userModel.City,
                 userModel.Country,
-                mainPhotoDto.PublicId,
-                mainPhotoDto.Url,
+                mainPhotoDto is null,
+                mainPhotoDto?.PublicId ?? "",
+                mainPhotoDto?.Url ?? "",
                 userModel.BirthDate,
                 userModel.FirstName,
                 userModel.LastName,
                 userModel.Sex);
 
-            _userRepository.AddUser(newUser);
-            await _userRepository.SaveAllAsync();
+            var result = await _userRepository.AddUser(newUser, userModel.Password);
 
-            return userModel;
+            return result;
         }
 
-        public async Task<LoggedUserDto> LoginUser(LoginUserDto usermModel)
+        public async Task<LoggedUserDto> LoginUser(LoginUserDto userModel)
         {
-            var existedUser = await _userRepository.GetByPredicateAsync(u => u.UserName == usermModel.UserName
-                                                    || u.Email == usermModel.UserName);
+            var existedUser = await _userRepository.GetByPredicateAsync(u => u.UserName == userModel.UserName
+                                                    || u.Email == userModel.UserName);
 
             if (existedUser == null)
             {
                 throw new ArgumentNullException("Login or Password is incorrect");
             }
 
+            var result = await _signInManager.CheckPasswordSignInAsync(existedUser, userModel.Password, false);
+
+            if (!result.Succeeded) return null;
+
             return new LoggedUserDto
             {
-                UserName = usermModel.UserName,
-                Token = _tokenService.CreateToken(existedUser)
+                UserName = userModel.UserName
             };
         }
 
@@ -66,43 +69,12 @@ namespace DatingApp.Business.Services
                 return false;
             }
 
-
-
-            return true;
-        }
-
-        private bool CompareHashes(byte[] hash1, byte[] hash2)
-        {
-            if (hash1.Length != hash2.Length)
-            {
-                return false;
-            }
-
-            for (int i = 0; i < hash1.Length; ++i)
-            {
-                if (hash1[i] != hash2[i])
-                {
-                    return false;
-                }
-            }
-
             return true;
         }
 
         public async Task<UserDto> UpdateUser(int userId, UserDto userModel)
         {
-            var user = _userRepository.GetUser(userId);
-
-            user.UpdateMainUserFields(userModel.Interests,
-                userModel.LookingFor,
-                userModel.City,
-                userModel.Country,
-                userModel.BirthDate,
-                userModel.FirstName,
-                userModel.LastName,
-                userModel.Sex);
-
-            var userDto = _userRepository.UpdatUser(user);
+            var userDto = _userRepository.UpdateUser(userId, userModel);
             await _userRepository.SaveAllAsync();
 
             return userDto;

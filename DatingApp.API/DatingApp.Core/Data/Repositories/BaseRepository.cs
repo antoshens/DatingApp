@@ -15,6 +15,11 @@ namespace DatingApp.Core.Data.Repositories
             Db = db;
         }
 
+        public BaseRepository(IMapper mapper)
+        {
+            Mapper = mapper;
+        }
+
         public BaseRepository(DataContext db, IMapper mapper)
         {
             Db = db;

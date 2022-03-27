@@ -1,19 +1,24 @@
 ﻿using AutoMapper;
 using DatingApp.Core.Model;
 using DatingApp.Core.Model.DTOs;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace DatingApp.Core.Data.Repositories
 {
     public class UserRepository : BaseRepository<User>, IUserRepository
     {
-        public UserRepository(DataContext db, IMapper mapper) : base(db, mapper)
+        private readonly UserManager<User> _userManager;
+
+        public UserRepository(UserManager<User> userManager, DataContext db, IMapper mapper) : base(db, mapper)
         {
+            _userManager = userManager;
         }
 
         public T GetUser<T>(int userId)
         {
-            var domainUser = GetUser(userId);
+            var domainUser = _userManager.Users.SingleOrDefault(u => u.Id == userId);
 
             var userModel = this.Mapper.Map<User, T>(domainUser);
 
@@ -22,7 +27,7 @@ namespace DatingApp.Core.Data.Repositories
 
         public User GetUser(int userId)
         {
-            var user = Db.Users.SingleOrDefault(u => u.Id == userId);
+            var user = _userManager.Users.SingleOrDefault(u => u.Id == userId);
 
             return user;
         }
@@ -38,9 +43,14 @@ namespace DatingApp.Core.Data.Repositories
             return user;
         }
 
+        public override async Task<User?> GetByPredicateAsync(Expression<Func<User, bool>> predicate)
+        {
+            return await _userManager.Users.FirstOrDefaultAsync(predicate);
+        }
+
         public async Task<IEnumerable<UserDto>> GetLikedUsers(int sourceUserId)
         {
-            var user = await Db.Users
+            var user = await _userManager.Users
                 .Include(x => x.LikedUsers.Select(_ => _.LikedUser))
                 .Include(x => x.Photos)
                 .FirstOrDefaultAsync(u => u.Id == sourceUserId && !u.IsDeleted);
@@ -52,7 +62,7 @@ namespace DatingApp.Core.Data.Repositories
 
         public async Task<IEnumerable<UserDto>> GetLikedByUsers(int sourceUserId)
         {
-            var user = await Db.Users
+            var user = await _userManager.Users
                 .Include(x => x.LikedByUsers.Select(_ => _.LikedUser))
                 .Include(x => x.Photos)
                 .FirstOrDefaultAsync(u => u.Id == sourceUserId && !u.IsDeleted);
@@ -62,33 +72,37 @@ namespace DatingApp.Core.Data.Repositories
             return likedByUsersModel;
         }
 
-        public UserDto UpdatUser(User user)
+        public UserDto UpdateUser(int userId, UserDto userModel)
         {
-            Db.Entry(user).State = EntityState.Modified;
+            var user = GetUser(userId);
+            user.UpdateMainUserFields(userModel.Interests,
+               userModel.LookingFor,
+               userModel.City,
+               userModel.Country,
+               userModel.BirthDate,
+               userModel.FirstName,
+               userModel.LastName,
+               userModel.Sex);
+
+            _userManager.UpdateAsync(user);
+
+            return userModel;
+        }
+
+        public async Task<UserDto> AddUser(User user, string password)
+        {
+            var result = await _userManager.CreateAsync(user, password);
+
+            if (!result.Succeeded) return null;
 
             var userDto = this.Mapper.Map<User, UserDto>(user);
-
-            Db.SaveChanges();
 
             return userDto;
         }
 
-        public UserDto AddUser(User user)
+        public async Task DeleteUser(User user)
         {
-            Db.Users.Add(user);
-
-            var userDto = this.Mapper.Map<User, UserDto>(user);
-
-            Db.SaveChanges();
-
-            return userDto;
-        }
-
-        public void DeleteUser(User user)
-        {
-            Db.Users.Remove(user);
-
-            Db.SaveChanges();
+            await _userManager.DeleteAsync(user);
         }
 
         public UserLike LikeUser(User user, int likedUserId)
