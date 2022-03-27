@@ -1,5 +1,7 @@
 ﻿using DatingApp.Core.Model;
 using DatingApp.Core.Model.DomainModels;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.Extensions.Logging;
@@ -7,7 +9,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace DatingApp.Core.Data
 {
-    public class DataContext : DbContext
+    public class DataContext : IdentityDbContext<User, Role, int,
+        IdentityUserClaim<int>, UserRole, IdentityUserLogin<int>,
+        IdentityRoleClaim<int>, IdentityUserToken<int>>
     {
         private readonly int _userId;
         private readonly ILogger<DataContext> _logger;
@@ -29,7 +33,6 @@ namespace DatingApp.Core.Data
          * ========================== Db Tables ==========================
          * ===============================================================
          */
-        public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<AuditInfo> AuditInfoes { get; set; }
         public virtual DbSet<Photo> Photos { get; set; }
         public virtual DbSet<UserLike> UserLikes { get; set; }
@@ -46,6 +49,18 @@ namespace DatingApp.Core.Data
 
             builder.Entity<UserLike>()
                 .HasKey(k => new { k.SourceUserId, k.LikedUserId });
+
+            builder.Entity<User>()
+                .HasMany(ur => ur.UserRoles)
+                .WithOne(u => u.User)
+                .HasForeignKey(u => u.UserId)
+                .IsRequired();
+
+            builder.Entity<Role>()
+                .HasMany(ur => ur.UserRoles)
+                .WithOne(u => u.Role)
+                .HasForeignKey(u => u.RoleId)
+                .IsRequired();
 
             builder.Entity<UserLike>()
                 .HasOne(s => s.SourceUser)

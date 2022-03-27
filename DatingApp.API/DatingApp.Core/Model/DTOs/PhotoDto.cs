@@ -23,7 +23,7 @@ namespace DatingApp.Core.Model.DTOs
         public void ConfigureMapTo(IMappingExpression<Photo, PhotoDto> mapping)
         {
             mapping.ForMember(x => x.PhotoId, s => s.MapFrom(x => x.PhotoId));
-            mapping.ForMember(x => x.UserId, s => s.MapFrom(x => x.User.UserId));
+            mapping.ForMember(x => x.UserId, s => s.MapFrom(x => x.User.Id));
             mapping.ForMember(x => x.PublicId, s => s.MapFrom(x => x.PublicId));
             mapping.ForMember(x => x.Url, s => s.MapFrom(x => x.Url));
             mapping.ForMember(x => x.IsMain, s => s.MapFrom(x => x.IsMain));

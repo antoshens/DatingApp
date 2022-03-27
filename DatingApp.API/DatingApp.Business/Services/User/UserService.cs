@@ -22,8 +22,6 @@ namespace DatingApp.Business.Services
             var mainPhotoDto = userModel.Photos.First(p => p.IsMain);
 
             var newUser = new User(userModel.UserName,
-                hmac.ComputeHash(Encoding.UTF8.GetBytes(userModel.Password)),
-                hmac.Key,
                 userModel.Email,
                 userModel.Interests,
                 userModel.LookingFor,
@@ -52,15 +50,6 @@ namespace DatingApp.Business.Services
                 throw new ArgumentNullException("Login or Password is incorrect");
             }
 
-            using var hmac = new HMACSHA512(existedUser.PasswordSalt);
-
-            var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(usermModel.Password));
-
-            if (!CompareHashes(computedHash, existedUser.PasswordHash))
-            {
-                throw new ArgumentNullException("Login or Password is incorrect");
-            }
-
             return new LoggedUserDto
             {
                 UserName = usermModel.UserName,
@@ -70,7 +59,7 @@ namespace DatingApp.Business.Services
 
         public async Task<bool> LogoutUser(int userId)
         {
-            var existedUser = await _userRepository.GetByPredicateAsync(u => u.UserId == userId);
+            var existedUser = await _userRepository.GetByPredicateAsync(u => u.Id == userId);
 
             if (existedUser == null)
             {

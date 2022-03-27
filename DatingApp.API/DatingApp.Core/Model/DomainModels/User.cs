@@ -12,7 +12,7 @@ namespace DatingApp.Core.Model
 
         }
 
-        public User(string userName, byte[] passwordHash, byte[] passwordSalt, string email, string interests,
+        public User(string userName, string email, string interests,
             string lookingFor, string city, string country, string publicPhotoId, string photoUrl,
             DateTime? birthDate = null, string? firstName = null, string? lastName = null, byte? sex = null)
         {
@@ -21,17 +21,10 @@ namespace DatingApp.Core.Model
                 throw new ArgumentException(nameof(UserName));
             }
 
-            if (passwordHash.Length == 0 || passwordSalt.Length == 0)
-            {
-                throw new ArgumentException("You should have a password", nameof(PasswordSalt));
-            }
-
             UserName = userName;
             Email = email;
             FirstName = firstName;
             LastName = lastName;
-            PasswordHash = passwordHash;
-            PasswordSalt = passwordSalt;
             BirthDate = birthDate;
             Interests = interests;
             LookingFor = lookingFor;
@@ -84,14 +77,6 @@ namespace DatingApp.Core.Model
 
             var oldPassswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(prevoisPassword));
             var oldPasswordSalt = hmac.Key;
-
-            if (PasswordHash != oldPassswordHash || PasswordSalt != oldPasswordSalt)
-            {
-                throw new ArgumentException("Old Password is invalid");
-            }
-
-            PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(newPassword));
-            PasswordSalt = hmac.Key;
         }
 
         public void UpdateEmailOrUserName(string newEmail, string newUserName)
@@ -111,7 +96,7 @@ namespace DatingApp.Core.Model
         {
             if (LikedUsers == null) LikedUsers = new List<UserLike>();
 
-            var userLike = new UserLike(UserId, likedUserId);
+            var userLike = new UserLike(Id, likedUserId);
 
             LikedUsers.Add(userLike);
 

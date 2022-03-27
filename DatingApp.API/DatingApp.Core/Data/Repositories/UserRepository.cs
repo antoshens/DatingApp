@@ -22,14 +22,14 @@ namespace DatingApp.Core.Data.Repositories
 
         public User GetUser(int userId)
         {
-            var user = Db.Users.SingleOrDefault(u => u.UserId == userId);
+            var user = Db.Users.SingleOrDefault(u => u.Id == userId);
 
             return user;
         }
 
         public User GetFullUser(int userId)
         {
-            var user = GetQueryByExpression(_ => _.UserId == userId)
+            var user = GetQueryByExpression(_ => _.Id == userId)
                 .Include(x => x.Photos)
                 .Include(x => x.LikedUsers)
                 .Include(x => x.LikedByUsers)
@@ -43,7 +43,7 @@ namespace DatingApp.Core.Data.Repositories
             var user = await Db.Users
                 .Include(x => x.LikedUsers.Select(_ => _.LikedUser))
                 .Include(x => x.Photos)
-                .FirstOrDefaultAsync(u => u.UserId == sourceUserId && !u.IsDeleted);
+                .FirstOrDefaultAsync(u => u.Id == sourceUserId && !u.IsDeleted);
 
             var likedUsersModel = user?.LikedUsers.Select(x => Mapper.Map<UserDto>(x.LikedUser));
 
@@ -55,7 +55,7 @@ namespace DatingApp.Core.Data.Repositories
             var user = await Db.Users
                 .Include(x => x.LikedByUsers.Select(_ => _.LikedUser))
                 .Include(x => x.Photos)
-                .FirstOrDefaultAsync(u => u.UserId == sourceUserId && !u.IsDeleted);
+                .FirstOrDefaultAsync(u => u.Id == sourceUserId && !u.IsDeleted);
 
             var likedByUsersModel = user?.LikedByUsers.Select(x => Mapper.Map<UserDto>(x.SourceUser));
 

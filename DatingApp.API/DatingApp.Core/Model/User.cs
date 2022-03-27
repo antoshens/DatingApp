@@ -1,26 +1,22 @@
 ﻿using DatingApp.Core.Model.DomainModels;
+using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DatingApp.Core.Model
 {
-    public partial class User : IEntity, IEntityAudit
+    public partial class User : IdentityUser<int>, IEntity, IEntityAudit
     {
         [NotMapped]
-        public int PrimaryKey => UserId;
+        public int PrimaryKey => Id;
         [NotMapped]
-        public int AuditEntityKey => UserId;
+        public int AuditEntityKey => Id;
         public bool IsDeleted { get; set; }
         public int AuditInfoId { get; set; }
 
-        public int UserId { get; private set; }
-        public string UserName { get; private set; }
-        public string Email { get; private set; }
         public string? FirstName { get; private set; }
         public string? LastName { get; private set; }
         public DateTime? BirthDate { get; private set; }
         public byte? Sex { get; private set; }
-        public byte[] PasswordHash { get; private set; }
-        public byte[] PasswordSalt { get; private set; }
         public DateTime LastActive { get; private set; } = DateTime.UtcNow;
         public string Interests { get; private set; }
         public string LookingFor {get; private set; }
@@ -34,5 +30,6 @@ namespace DatingApp.Core.Model
         public ICollection<UserLike> LikedUsers { get; set; } // 1:M (FK) UserLike.UserLikeId
         public ICollection<Message> SentMessages { get; set; } // 1:M (FK) Message.MessageId
         public ICollection<Message> ReceivedMessages { get; set; } // M:1 (FK) Message.MessageId
+        public ICollection<UserRole> UserRoles { get; set; } // M:1 (FK) UserRole.RoleId
     }
 }

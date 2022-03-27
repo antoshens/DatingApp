@@ -13,6 +13,8 @@ using DatingApp.Infrastructure.Bus;
 using DatingApp.Business.EventHandlers;
 using DatingApp.Business.Events;
 using DatingApp.Business.Services.Message;
+using DatingApp.Core.Model;
+using Microsoft.AspNetCore.Identity;
 
 namespace DatingApp.Infrastructure.IoC
 {
@@ -44,6 +46,17 @@ namespace DatingApp.Infrastructure.IoC
 
             var mapper = mapperConfig.CreateMapper();
             services.AddSingleton(mapper);
+
+            // Identity setup
+            services.AddIdentityCore<User>(opt =>
+            {
+                opt.Password.RequireNonAlphanumeric = false;
+            })
+                .AddRoles<Role>()
+                .AddRoleManager<RoleManager<Role>>()
+                .AddSignInManager<SignInManager<User>>()
+                .AddRoleValidator<RoleValidator<Role>>()
+                .AddEntityFrameworkStores<DataContext>();
 
             // DatingApp.Business
             /* Register services */
