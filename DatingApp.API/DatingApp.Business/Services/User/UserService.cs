@@ -7,11 +7,13 @@ namespace DatingApp.Business.Services
     public class UserService : IUserService
     {
         private readonly IUserRepository _userRepository;
+        private readonly ITokenService _tokenService;
         private readonly SignInManager<User> _signInManager;
 
-        public UserService(IUserRepository userRepository, SignInManager<User> signInManager)
+        public UserService(IUserRepository userRepository, ITokenService tokenService, SignInManager<User> signInManager)
         {
             _userRepository = userRepository;
+            _tokenService = tokenService;
             _signInManager = signInManager;
         }
 
@@ -56,7 +58,8 @@ namespace DatingApp.Business.Services
 
             return new LoggedUserDto
             {
-                UserName = userModel.UserName
+                UserName = userModel.UserName,
+                Token = _tokenService.CreateToken(existedUser)
             };
         }
 
