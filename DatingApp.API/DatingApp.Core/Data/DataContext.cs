@@ -37,6 +37,8 @@ namespace DatingApp.Core.Data
         public virtual DbSet<Photo> Photos { get; set; }
         public virtual DbSet<UserLike> UserLikes { get; set; }
         public virtual DbSet<Message> Messages { get; set; }
+        public virtual DbSet<Connection> Connections { get; set; }
+        public virtual DbSet<Group> Groups { get; set; }
 
         /* 
          * ===============================================================

@@ -11,6 +11,28 @@ namespace DatingApp.Core.Data.Repositories
         {
         }
 
+        public void AddGroup(Group group)
+        {
+            Db.Groups.Add(group);
+        }
+
+        public void RemoveConnection(Connection connection)
+        {
+            Db.Connections.Remove(connection);
+        }
+
+        public async Task<Connection> GetConnection(string ConnectionId)
+        {
+            return await Db.Connections.SingleOrDefaultAsync(c => c.ConnectionId == ConnectionId);
+        }
+
+        public async Task<Group> GetMessageGroup(string groupName)
+        {
+            return await Db.Groups
+                .Include(x => x.Connections)
+                .FirstOrDefaultAsync(g => g.Name == groupName);
+        }
+
         public void AddMessage(Message message)
         {
             Db.Messages.Add(message);
