@@ -41,7 +41,7 @@ namespace DatingApp.Business.Services.Authentication
 
         public int? GetCurrentUserId(ClaimsPrincipal principal)
         {
-            if (principal == null) throw new ArgumentNullException(nameof(principal)); ;
+            if (principal == null) throw new ArgumentNullException(nameof(principal));
 
             var loggedInUserId = principal.Claims.FirstOrDefault(c => c.Type == ClaimsIdentity.DefaultNameClaimType);
 
@@ -53,6 +53,15 @@ namespace DatingApp.Business.Services.Authentication
             }
 
             return null;
+        }
+
+        public string GetCurrentUserName(ClaimsPrincipal principal)
+        {
+            if (principal == null) throw new ArgumentNullException(nameof(principal));
+
+            var loggedInUserName = principal.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.NameId);
+
+            return loggedInUserName is null ? string.Empty : loggedInUserName.ToString();
         }
     }
 }

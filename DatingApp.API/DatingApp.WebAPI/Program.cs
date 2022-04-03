@@ -3,6 +3,7 @@ using DatingApp.Business.Events;
 using DatingApp.Core.Bus;
 using DatingApp.Infrastructure.IoC;
 using DatingApp.WebAPI.Middlewares;
+using DatingApp.WebAPI.SignalR;
 using DatingApp.WebAPI.Utils.Extensions;
 using Microsoft.AspNetCore.OData;
 
@@ -32,6 +33,7 @@ app.UseRouting();
 
 app.UseCors(_ => _.AllowAnyHeader()
     .AllowAnyMethod()
+    .AllowCredentials()
     .WithOrigins("http://localhost:4200")); // TODO: Use shared config file to store FE instance host address
 
 app.UseAuthentication();
@@ -41,6 +43,7 @@ app.UseAuthorization();
 app.UseMiddleware<RequestLoggingMiddleware>();
 
 app.MapControllers();
+app.MapHub<PresenceHub>("hubs/presence");
 
 app.Run();
 

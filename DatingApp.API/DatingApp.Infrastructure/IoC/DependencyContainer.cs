@@ -69,6 +69,8 @@ namespace DatingApp.Infrastructure.IoC
             services.AddScoped<IMessageRepository, MessageRepository>();
             services.AddScoped<IMessageService, MessageService>();
 
+            services.AddSignalR();
+
             // Event Bus Subscriptions
             services.AddTransient<PhotoUploadedEventHandler>();
             services.AddTransient<IEventHandler<PhotoUploadedEvent>, PhotoUploadedEventHandler>();

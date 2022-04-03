@@ -6,5 +6,6 @@ namespace DatingApp.Business.Services.Authentication
     {
         string CreateToken(User user);
         int? GetCurrentUserId(ClaimsPrincipal user);
+        string GetCurrentUserName(ClaimsPrincipal principal);
     }
 }
