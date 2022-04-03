@@ -44,7 +44,7 @@ namespace DatingApp.WebAPI.SignalR
             await base.OnDisconnectedAsync(exception);
         }
 
-        public async Task<bool> AddToGroup(HubCallerContext context, string groupName)
+        public async Task<Group> AddToGroup(string groupName)
         {
             var group = await _messageService.GetMessageGroup(groupName);
             var connection = new Connection(Context.ConnectionId, _tokenService.GetCurrentUserName(Context.User));
@@ -55,14 +55,14 @@ namespace DatingApp.WebAPI.SignalR
                 _messageService.AddGroup(group);
             }
 
-            group.Connections.Add(connection);
+            await _messageService.AddConnectionToGroup(groupName, connection);
 
-            return true;
+            return group;
         }
 
-        public async Task RemoveFromGroup(string connectionId)
+        public async Task RemoveFromGroup()
         {
-            var connection = await _messageService.GetConnection(connectionId);
+            var connection = await _messageService.GetConnection(Context.ConnectionId);
             _messageService.RemoveConnection(connection);
         }
 

@@ -95,7 +95,15 @@
 
         public Task<IEnumerable<GetMessageDto>> GetMessageThread(int senderId, int recepientId)
         {
-            return _messageRepository.GetMessageThread(senderId, recepientId);
+           return _messageRepository.GetMessageThread(senderId, recepientId);
+        }
+
+        public async Task AddConnectionToGroup(string groupName, Connection connection)
+        {
+            var group = await _messageRepository.GetMessageGroup(groupName);
+
+            group.Connections.Add(connection);
+            _messageRepository.SaveAll();
         }
 
         public void RemoveConnection(Connection connection)

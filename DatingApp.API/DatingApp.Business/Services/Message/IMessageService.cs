@@ -10,5 +10,6 @@
         bool DeleteMessage(GetMessageDto message, MessageDeletionOption messageDeletionOption);
         GetMessageDto EditMessage(int messageId, string newContent);
         Task<IEnumerable<GetMessageDto>> GetMessageThread(int senderId, int recepientId);
+        Task AddConnectionToGroup(string groupName, Connection connection);
     }
 }
