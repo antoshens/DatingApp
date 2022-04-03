@@ -36,7 +36,6 @@ namespace DatingApp.Core.Data.Repositories
         public void AddMessage(Message message)
         {
             Db.Messages.Add(message);
-            Db.SaveChanges();
         }
 
         public GetMessageDto EditMessage(int messageId, string newContent)
@@ -49,7 +48,7 @@ namespace DatingApp.Core.Data.Repositories
             var message = Db.Messages.Single(m => m.MessageId == messageId);
 
             message.Content = newContent;
-            Db.SaveChanges();
+            message.DateEdited = DateTime.UtcNow;
 
             return Mapper.Map<GetMessageDto>(message);
         }

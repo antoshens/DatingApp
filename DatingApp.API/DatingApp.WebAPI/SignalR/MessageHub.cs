@@ -1,5 +1,6 @@
 ﻿using DatingApp.Business.Services.Authentication;
 using DatingApp.Business.Services.Message;
+using DatingApp.Core.Model;
 using Microsoft.AspNetCore.SignalR;
 
 namespace DatingApp.WebAPI.SignalR
@@ -38,6 +39,29 @@ namespace DatingApp.WebAPI.SignalR
             await base.OnDisconnectedAsync(exception);
         }
 
+        public async Task<bool> AddToGroup(HubCallerContext context, string groupName)
+        {
+            var group = await _messageService.GetMessageGroup(groupName);
+            var connection = new Connection(Context.ConnectionId, _tokenService.GetCurrentUserName(Context.User));
+
+            if (group is null)
+            {
+                group = new Group(groupName);
+                _messageService.AddGroup(group);
+            }
+
+            group.Connections.Add(connection);
+
+            return _messageService.SaveAll();
+        }
+
+        public async Task RemoveFromGroup(string connectionId)
+        {
+            var connection = await _messageService.GetConnection(connectionId);
+            _messageService.RemoveConnection(connection);
+            _messageService.SaveAll();
+        }
+
         public async Task SendMessage(SendMessageDto message)
         {
             var httpContext = Context.GetHttpContext();
@@ -51,6 +75,8 @@ namespace DatingApp.WebAPI.SignalR
             var respose = _messageService.CreateMessage(currentUser.Id, message);
 
             if (respose.Failed) throw new HubException(respose.FailedMessage);
+
+            var group = await _messageService.GetMessageGroup(groupName);
 
             await Clients.Group(groupName).SendAsync("NewMessage", respose.Data);
         }

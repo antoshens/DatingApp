@@ -12,5 +12,11 @@ namespace DatingApp.Core.Model
         {
             userName = userName;
         }
+
+        public Connection(string connectionId, string userName)
+        {
+            ConnectionId = connectionId;
+            UserName = userName;
+        }
     }
 }

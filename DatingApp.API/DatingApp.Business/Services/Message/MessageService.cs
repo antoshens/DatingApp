@@ -1,12 +1,18 @@
 ﻿namespace DatingApp.Business.Services.Message
 {
-    public class MessageService : BaseService, IMessageService
+    public class MessageService : IMessageService
     {
         private readonly IMessageRepository _messageRepository;
 
-        public MessageService(DataContext db, IMessageRepository messageRepository) : base(db)
+        public MessageService(IMessageRepository messageRepository)
         {
             _messageRepository = messageRepository;
+        }
+
+        public void AddGroup(Group group)
+        {
+            _messageRepository.AddGroup(group);
+            _messageRepository.SaveAll();
         }
 
         public BusinessResponse<Core.Model.Message> CreateMessage(int senderId, SendMessageDto newMessage)
@@ -34,6 +40,7 @@
             try
             {
                 _messageRepository.AddMessage(message);
+                _messageRepository.SaveAll();
             }
             catch (Exception ex)
             {
@@ -58,6 +65,7 @@
                     throw new ArgumentNullException(nameof(message));
 
                 _messageRepository.DeleteMessage(message.Id, messageDeletionOption);
+                _messageRepository.SaveAll();
             }
             catch (Exception)
             {
@@ -70,13 +78,30 @@
         public GetMessageDto EditMessage(int messageId, string newContent)
         {
             var newMessage = _messageRepository.EditMessage(messageId, newContent);
+            _messageRepository.SaveAll();
 
             return newMessage;
+        }
+
+        public async Task<Connection> GetConnection(string ConnectionId)
+        {
+            return await _messageRepository.GetConnection(ConnectionId);
+        }
+
+        public async Task<Group> GetMessageGroup(string groupName)
+        {
+           return await _messageRepository.GetMessageGroup(groupName);
         }
 
         public Task<IEnumerable<GetMessageDto>> GetMessageThread(int senderId, int recepientId)
         {
             return _messageRepository.GetMessageThread(senderId, recepientId);
+        }
+
+        public void RemoveConnection(Connection connection)
+        {
+            _messageRepository.RemoveConnection(connection);
+            _messageRepository.SaveAll();
         }
     }
 }
