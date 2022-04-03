@@ -20,9 +20,13 @@ namespace DatingApp.WebAPI.Controllers
         }
 
         [Route("send"), HttpPost]
-        public void CreateMessage(SendMessageDto message)
+        public IActionResult CreateMessage(SendMessageDto message)
         {
-            _messageService.CreateMessage(_currentUser.UserId, message);
+            var respose = _messageService.CreateMessage(_currentUser.UserId, message);
+
+            if (respose.Failed) return BadRequest(respose.FailedMessage);
+
+            return Ok();
         }
 
         [Route("delete/{messageDeletionOption}"), HttpDelete]

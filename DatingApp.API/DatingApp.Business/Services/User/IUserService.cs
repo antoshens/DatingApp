@@ -6,6 +6,7 @@
         Task<BusinessResponse<LoggedUserDto>> LoginUser(LoginUserDto usermMdel);
         Task<bool> LogoutUser(int userId);
         Task<UserDto> UpdateUser(int userId, UserDto userModel);
+        Task<User> GetUserByName(string username);
         Task DeleteUser(int userId);
         UserLike LikeUser(int sourceUserId, int likedUserId);
         void UnlikeUser(int sourceUserId, int inlikedUserId);

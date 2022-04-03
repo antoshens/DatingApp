@@ -106,6 +106,15 @@ namespace DatingApp.Business.Services
             return userDto;
         }
 
+        public async Task<User> GetUserByName(string username)
+        {
+            var user = await _userRepository.GetByPredicateAsync(u => u.UserName == username && !u.IsDeleted);
+
+            if (user is null) return new User();
+
+            return user;
+        }
+
         public async Task DeleteUser(int userId)
         {
             var user = _userRepository.GetFullUser(userId);

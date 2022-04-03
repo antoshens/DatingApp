@@ -43,7 +43,9 @@ app.UseAuthorization();
 app.UseMiddleware<RequestLoggingMiddleware>();
 
 app.MapControllers();
+
 app.MapHub<PresenceHub>("hubs/presence");
+app.MapHub<PresenceHub>("hubs/message");
 
 app.Run();
 
