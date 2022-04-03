@@ -10,12 +10,17 @@ namespace DatingApp.WebAPI.SignalR
         private readonly ITokenService _tokenService;
         private readonly IUserService _userService;
         private readonly IMessageService _messageService;
+        private readonly IHubContext<PresenceHub> _presenceHub;
+        private readonly PresenceTracker _presenceTracker;
 
-        public MessageHub(ITokenService tokenService, IMessageService messageService, IUserService userService)
+        public MessageHub(ITokenService tokenService, IMessageService messageService,
+             IUserService userService, IHubContext<PresenceHub> presenceHub, PresenceTracker presenceTracker)
         {
             _tokenService = tokenService;
             _messageService = messageService;
             _userService = userService;
+            _presenceHub = presenceHub;
+            _presenceTracker = presenceTracker;
         }
 
         public override async Task OnConnectedAsync()
@@ -52,31 +57,43 @@ namespace DatingApp.WebAPI.SignalR
 
             group.Connections.Add(connection);
 
-            return _messageService.SaveAll();
+            return true;
         }
 
         public async Task RemoveFromGroup(string connectionId)
         {
             var connection = await _messageService.GetConnection(connectionId);
             _messageService.RemoveConnection(connection);
-            _messageService.SaveAll();
         }
 
         public async Task SendMessage(SendMessageDto message)
         {
             var httpContext = Context.GetHttpContext();
             var otherUserName = httpContext.Request.Query["user"].ToString();
+
             var currentUserName = _tokenService.GetCurrentUserName(Context.User);
+            var currentUser = await _userService.GetUserByName(currentUserName);
 
             var groupName = GetGroupName(currentUserName, otherUserName);
+            var group = await _messageService.GetMessageGroup(groupName);
 
-            var currentUser = await _userService.GetUserByName(currentUserName);
+            if (!group.Connections.Any(c => c.UserName == otherUserName))
+            {
+                var connections = await _presenceTracker.GetConnectionsForUser(otherUserName);
+                if (connections != null)
+                {
+                    await _presenceHub.Clients.Clients(connections).SendAsync("NewMessageReceived", new
+                    {
+                        firstname = currentUser.FirstName,
+                        lastname = currentUser.LastName,
+                        username = currentUserName
+                    });
+                }
+            }
 
             var respose = _messageService.CreateMessage(currentUser.Id, message);
 
             if (respose.Failed) throw new HubException(respose.FailedMessage);
-
-            var group = await _messageService.GetMessageGroup(groupName);
 
             await Clients.Group(groupName).SendAsync("NewMessage", respose.Data);
         }

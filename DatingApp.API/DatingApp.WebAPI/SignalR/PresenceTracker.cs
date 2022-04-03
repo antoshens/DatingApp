@@ -45,5 +45,15 @@ namespace DatingApp.WebAPI.SignalR
 
             return Task.FromResult(onlineUsers);
         }
+
+        public Task<IEnumerable<string>> GetConnectionsForUser(string username)
+        {
+            if (OnlineUsers.TryGetValue(username, out var connectionIds))
+            {
+                return Task.FromResult(connectionIds.AsEnumerable());
+            }
+
+            return Task.FromResult(Enumerable.Empty<string>());
+        }
     }
 }
