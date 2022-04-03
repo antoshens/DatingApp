@@ -62,6 +62,8 @@ static void RegisterServices(IServiceCollection services, IConfiguration configu
 
     // Register services using DI container
     DependencyContainer.RegisterServices(services, configuration);
+
+    services.AddSingleton<PresenceTracker>();
 }
 
 static void ConfigureEventBus(IApplicationBuilder app)
