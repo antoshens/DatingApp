@@ -6,8 +6,10 @@ namespace DatingApp.WebAPI.SignalR
     {
         private static readonly IDictionary<string, List<string>> OnlineUsers = new ConcurrentDictionary<string, List<string>>();
 
-        public Task UserConnected(string userName, string connectionId)
+        public Task<bool> UserConnected(string userName, string connectionId)
         {
+            var isOnline = false;
+
             if (OnlineUsers.ContainsKey(userName))
             {
                 OnlineUsers[userName].Add(connectionId);
@@ -15,23 +17,27 @@ namespace DatingApp.WebAPI.SignalR
             else
             {
                 OnlineUsers.Add(userName, new List<string> { connectionId });
+                isOnline = true;
             }
 
-            return Task.CompletedTask;
+            return Task.FromResult(isOnline);
         }
 
-        public Task UserDisconnected(string userName, string connectionId)
+        public Task<bool> UserDisconnected(string userName, string connectionId)
         {
-            if (!OnlineUsers.ContainsKey(userName)) return Task.CompletedTask;
+            var isOffline = false;
+
+            if (!OnlineUsers.ContainsKey(userName)) return Task.FromResult(isOffline);
             
                 OnlineUsers[userName].Remove(connectionId);
             
             if (OnlineUsers[userName].Count == 0)
             {
                 OnlineUsers.Remove(userName);
+                isOffline = true;
             }
 
-            return Task.CompletedTask;
+            return Task.FromResult(isOffline);
         }
 
         public Task<string[]> GetOnlineUsers()

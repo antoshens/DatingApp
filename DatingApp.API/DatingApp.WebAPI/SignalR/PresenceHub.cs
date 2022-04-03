@@ -21,21 +21,22 @@ namespace DatingApp.WebAPI.SignalR
         {
             var userName = _tokenService.GetCurrentUserName(Context.User);
 
-            await _presenceTracker.UserConnected(userName, Context.ConnectionId);
-            await Clients.Others.SendAsync("NotifyForOnlineUser", userName);
+            var userIsOnline = await _presenceTracker.UserConnected(userName, Context.ConnectionId);
+
+            if (userIsOnline)
+                await Clients.Others.SendAsync("NotifyForOnlineUser", userName);
 
             var currentUsers = await _presenceTracker.GetOnlineUsers();
-            await Clients.All.SendAsync("GetOnlineUsers", currentUsers);
+            await Clients.Caller.SendAsync("GetOnlineUsers", currentUsers);
         }
 
         public override async Task OnDisconnectedAsync(Exception exception)
         {
             var userName = _tokenService.GetCurrentUserName(Context.User);
-            await _presenceTracker.UserDisconnected(userName, Context.ConnectionId);
-            await Clients.Others.SendAsync("NotifyForOfflineUser", userName);
+            var userIsOffline = await _presenceTracker.UserDisconnected(userName, Context.ConnectionId);
 
-            var currentUsers = await _presenceTracker.GetOnlineUsers();
-            await Clients.All.SendAsync("GetOnlineUsers", currentUsers);
+            if (userIsOffline)
+                await Clients.Others.SendAsync("NotifyForOfflineUser", userName);
 
             base.OnDisconnectedAsync(exception);
         }
