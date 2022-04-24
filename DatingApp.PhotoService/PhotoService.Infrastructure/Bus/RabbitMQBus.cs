@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System.Text;
+using PhotoService.Business.Util;
 
 namespace PhotoService.Infrastructure
 {
@@ -13,10 +14,13 @@ namespace PhotoService.Infrastructure
         private readonly Dictionary<string, List<Type>> _handlers;
         private readonly List<Type> _eventTypes;
         private readonly IServiceScopeFactory _serviceScopeFactory;
+        private readonly RabbitMQOptions _rabbitMQOptions;
 
-        public RabbitMQBus(IServiceScopeFactory serviceScopeFactory)
+        public RabbitMQBus(IServiceScopeFactory serviceScopeFactory, RabbitMQOptions rabbitMQOptions)
         {
             _serviceScopeFactory = serviceScopeFactory;
+            _rabbitMQOptions = rabbitMQOptions;
+
             _handlers = new Dictionary<string, List<Type>>();
             _eventTypes = new List<Type>();
         }
@@ -25,8 +29,8 @@ namespace PhotoService.Infrastructure
         {
             var factory = new ConnectionFactory()
             {
-                HostName = "localhost",
-                Port = 5672,
+                HostName = _rabbitMQOptions.HostName,
+                Port = _rabbitMQOptions.Port,
                 DispatchConsumersAsync = true
             };
 
@@ -77,8 +81,8 @@ namespace PhotoService.Infrastructure
         {
             var factory = new ConnectionFactory()
             {
-                HostName = "172.17.0.2",
-                Port = 5672,
+                HostName = _rabbitMQOptions.HostName,
+                Port = _rabbitMQOptions.Port,
                 DispatchConsumersAsync = true
             };
 

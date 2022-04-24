@@ -5,7 +5,6 @@ using PhotoService.Business.Util;
 using PhotoService.Business.Interfaces;
 using PhotoService.Business.EventHandlers;
 using PhotoService.Business.Events;
-using Newtonsoft.Json;
 
 namespace PhotoService.Infrastructure
 {
@@ -21,29 +20,16 @@ namespace PhotoService.Infrastructure
             services.AddTransient<IEventHandler<DeletePhotoEvent>, DeletePhotoEventHandler>();
 
             // Register services
-            services.Configure<CloudinarySettings>(settings => {
-                var cloudSettings = ConfigureCloudinarySettigns(config.GetSection("CloudinarySettings").Value);
-
-                settings.CloudName = cloudSettings.CloudName;
-                settings.ApiKey = cloudSettings.ApiKey;
-                settings.ApiSecret = cloudSettings.ApiSecret;
-            });
             services.AddScoped<IPhotoService, Business.Services.PhotoService>();
 
             // Domain Bus
             services.AddSingleton<IEventBus, RabbitMQBus>(sp =>
             {
                 var scopeFactory = sp.GetRequiredService<IServiceScopeFactory>();
+                var rabbitMQOptions = sp.GetRequiredService<RabbitMQOptions>();
 
-                return new RabbitMQBus(scopeFactory);
+                return new RabbitMQBus(scopeFactory, rabbitMQOptions);
             });
-        }
-
-        private static CloudinarySettings ConfigureCloudinarySettigns(string settingsJson)
-        {
-            var cloudinarySettings = JsonConvert.DeserializeObject<CloudinarySettings>(settingsJson);
-
-            return cloudinarySettings ?? new CloudinarySettings();
         }
     }
 }

@@ -1,6 +1,5 @@
 ﻿using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
-using Microsoft.Extensions.Options;
 using PhotoService.Business.Interfaces;
 using PhotoService.Business.Util;
 
@@ -10,17 +9,12 @@ namespace PhotoService.Business.Services
     {
         private readonly Cloudinary _cloudinary;
 
-        public PhotoService(IOptionsSnapshot<CloudinarySettings> config)
+        public PhotoService(CloudinarySettings config)
         {
-            //var account = new Account(
-            //    config.Value.CloudName,
-            //    config.Value.ApiKey,
-            //    config.Value.ApiSecret);
-
             var account = new Account(
-                "dqzwcxacb",
-                "812996576425685",
-                "hZ2sL9_0uTHJa_7-78NSSegxNbY");
+                config.CloudName,
+                config.ApiKey,
+                config.ApiSecret);
 
             _cloudinary = new Cloudinary(account);
             _cloudinary.Api.Secure = true;
