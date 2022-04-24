@@ -15,6 +15,7 @@ using DatingApp.Business.Events;
 using DatingApp.Business.Services.Message;
 using DatingApp.Core.Model;
 using Microsoft.AspNetCore.Identity;
+using DatingApp.Business.Model;
 
 namespace DatingApp.Infrastructure.IoC
 {
@@ -82,8 +83,9 @@ namespace DatingApp.Infrastructure.IoC
             {
                 var scopeFactory = sp.GetRequiredService<IServiceScopeFactory>();
                 var logger = sp.GetRequiredService<ILogger<RabbitMQBus>>();
+                var rabbitMQOptions = sp.GetRequiredService<RabbitMQOptions>();
 
-                return new RabbitMQBus(scopeFactory, logger);
+                return new RabbitMQBus(scopeFactory, logger, rabbitMQOptions);
             });
         }
     }

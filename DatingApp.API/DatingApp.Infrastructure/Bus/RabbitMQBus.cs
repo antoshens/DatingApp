@@ -1,4 +1,5 @@
-﻿using DatingApp.Core.Bus;
+﻿using DatingApp.Business.Model;
+using DatingApp.Core.Bus;
 using DatingApp.Core.Events;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -16,21 +17,26 @@ namespace DatingApp.Infrastructure.Bus
         private readonly List<Type> _eventTypes;
         private readonly IServiceScopeFactory _serviceScopeFactory;
         private readonly ILogger<RabbitMQBus> _logger;
+        private readonly RabbitMQOptions _rabbitMQOptions;
 
-        public RabbitMQBus(IServiceScopeFactory serviceScopeFactory, ILogger<RabbitMQBus> logger)
+        public RabbitMQBus(
+            IServiceScopeFactory serviceScopeFactory,
+            ILogger<RabbitMQBus> logger,
+            RabbitMQOptions rabbitMQOptions)
         {
             _serviceScopeFactory = serviceScopeFactory;
             _handlers = new Dictionary<string, List<Type>>();
             _eventTypes = new List<Type>();
             _logger = logger;
+            _rabbitMQOptions = rabbitMQOptions;
         }
 
         public void Publish<T>(T @event) where T : BaseEvent
         {
             var factory = new ConnectionFactory()
             {
-                HostName = "localhost",
-                Port = 5672,
+                HostName = _rabbitMQOptions.HostName,
+                Port = _rabbitMQOptions.Port,
                 DispatchConsumersAsync = true
             };
 
@@ -80,8 +86,8 @@ namespace DatingApp.Infrastructure.Bus
         {
             var factory = new ConnectionFactory()
             {
-                HostName = "localhost",
-                Port = 5672,
+                HostName = _rabbitMQOptions.HostName,
+                Port = _rabbitMQOptions.Port,
                 DispatchConsumersAsync = true
             };
 

@@ -1,5 +1,6 @@
 using DatingApp.Business.EventHandlers;
 using DatingApp.Business.Events;
+using DatingApp.Business.Model;
 using DatingApp.Core.Bus;
 using DatingApp.Infrastructure.IoC;
 using DatingApp.WebAPI.Middlewares;
@@ -9,8 +10,12 @@ using Microsoft.AspNetCore.OData;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Configuration["EnvironmentName"] = builder.Environment.EnvironmentName;
+
 // Add services to the container.
 RegisterServices(builder.Services, builder.Configuration);
+
+BuildConfigurationOptions(builder.Services, builder.Configuration);
 
 builder.Services.AddAuthentication(builder.Configuration);
 
@@ -74,4 +79,15 @@ static void ConfigureEventBus(IApplicationBuilder app)
 
     eventBus.Subscribe<PhotoUploadedEvent, PhotoUploadedEventHandler>();
     eventBus.Subscribe<PhotoDeletedEvent, PhotoDeletedEventHandler>();
+}
+
+static void BuildConfigurationOptions(IServiceCollection services, IConfiguration configuration)
+{
+    var rabbitMQConfiguration = configuration.GetSection("RabbitMQ");
+
+    services.AddSingleton<RabbitMQOptions>(sp => new RabbitMQOptions
+    {
+        HostName = rabbitMQConfiguration.GetValue<string>("HostName"),
+        Port = rabbitMQConfiguration.GetValue<int>("Port")
+    });
 }
