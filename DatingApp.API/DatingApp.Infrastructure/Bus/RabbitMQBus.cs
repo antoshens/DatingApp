@@ -81,6 +81,7 @@ namespace DatingApp.Infrastructure.Bus
             var factory = new ConnectionFactory()
             {
                 HostName = "localhost",
+                Port = 5672,
                 DispatchConsumersAsync = true
             };
 
