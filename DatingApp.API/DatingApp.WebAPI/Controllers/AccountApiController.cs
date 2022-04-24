@@ -14,19 +14,19 @@ namespace DatingApp.WebAPI.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<ActionResult<UserDto>> Register(UserDto model)
+        public async Task<UserDto> Register(UserDto model)
         {
             var result = await _userService.RegisterNewUser(model);
 
-            return result.Failed ? BadRequest(result.FailedMessage) : Ok(result.Data);
+            return result;
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult<LoggedUserDto>> Login(LoginUserDto model)
+        public async Task<LoggedUserDto> Login(LoginUserDto model)
         {
             var result = await _userService.LoginUser(model);
 
-            return result.Failed ? Unauthorized() : Ok(result.Data);
+            return result;
         }
     }
 }

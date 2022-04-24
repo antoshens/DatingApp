@@ -15,24 +15,16 @@
             _messageRepository.SaveAll();
         }
 
-        public BusinessResponse<Core.Model.Message> CreateMessage(int senderId, SendMessageDto newMessage)
+        public Core.Model.Message CreateMessage(int senderId, SendMessageDto newMessage)
         {
             if (senderId == 0 || newMessage.RecepientId == 0)
             {
-                return new BusinessResponse<Core.Model.Message>
-                {
-                    Failed = true,
-                    FailedMessage = "Can not send the message to the given recepient"
-                };
+                throw new Exception("Can not send the message to the given recepient");
             }
 
             if (senderId == newMessage.RecepientId)
             {
-                return new BusinessResponse<Core.Model.Message>
-                {
-                    Failed = true,
-                    FailedMessage = "You can not send message to yourself"
-                };
+                throw new Exception("You can not send message to yourself");
             }
 
             var message = new Core.Model.Message(senderId, newMessage.RecepientId, newMessage.Content);
@@ -42,19 +34,12 @@
                 _messageRepository.AddMessage(message);
                 _messageRepository.SaveAll();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return new BusinessResponse<Core.Model.Message>
-                {
-                    Failed = true,
-                    FailedMessage = "Can not send the message to the given recepient"
-                };
+                throw new Exception("Can not send the message to the given recepient");
             }
 
-            return new BusinessResponse<Core.Model.Message>
-            {
-                Data = message
-            };
+            return message;
         }
 
         public bool DeleteMessage(GetMessageDto message, MessageDeletionOption messageDeletionOption)

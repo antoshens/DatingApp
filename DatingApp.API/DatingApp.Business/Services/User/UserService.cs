@@ -16,7 +16,7 @@ namespace DatingApp.Business.Services
             _signInManager = signInManager;
         }
 
-        public async Task<BusinessResponse<UserDto>> RegisterNewUser(UserDto userModel)
+        public async Task<UserDto> RegisterNewUser(UserDto userModel)
         {
             var mainPhotoDto = userModel.Photos.FirstOrDefault(p => p.IsMain);
 
@@ -40,49 +40,35 @@ namespace DatingApp.Business.Services
             {
                 var result = await _userRepository.AddUser(newUser, userModel.Password);
 
-                return new BusinessResponse<UserDto>
-                {
-                    Data = result
-                };
+                return result;
             }
             catch (Exception ex)
             {
-                return new BusinessResponse<UserDto>
-                {
-                    Failed = true,
-                    FailedMessage = ex.Message
-                };
+                throw new Exception(ex.Message);
             }
         }
 
-        public async Task<BusinessResponse<LoggedUserDto>> LoginUser(LoginUserDto userModel)
+        public async Task<LoggedUserDto> LoginUser(LoginUserDto userModel)
         {
             var existedUser = await _userRepository.GetByPredicateAsync(u => u.UserName == userModel.UserName
                                                     || u.Email == userModel.UserName);
 
             if (existedUser == null)
             {
-                throw new ArgumentNullException("Login or Password is incorrect");
+                throw new ArgumentException("Login or Password is incorrect");
             }
 
             var result = await _signInManager.CheckPasswordSignInAsync(existedUser, userModel.Password, false);
 
             if (!result.Succeeded)
             {
-                return new BusinessResponse<LoggedUserDto>
-                {
-                    Failed = true,
-                    FailedMessage = "Login or Password is incorrect"
-                };
+                throw new ArgumentException("Login or Password is incorrect");
             }
 
-            return new BusinessResponse<LoggedUserDto>
+            return new LoggedUserDto
             {
-                Data = new LoggedUserDto
-                {
-                    UserName = userModel.UserName,
-                    Token = _tokenService.CreateToken(existedUser)
-                }
+                UserName = userModel.UserName,
+                Token = _tokenService.CreateToken(existedUser)
             };
         }
 
@@ -110,7 +96,7 @@ namespace DatingApp.Business.Services
         {
             var user = await _userRepository.GetByPredicateAsync(u => u.UserName == username && !u.IsDeleted);
 
-            if (user is null) return new User();
+            if (user is null) throw new ArgumentNullException(nameof(user));
 
             return user;
         }

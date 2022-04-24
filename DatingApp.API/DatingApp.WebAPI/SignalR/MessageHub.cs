@@ -91,11 +91,16 @@ namespace DatingApp.WebAPI.SignalR
                 }
             }
 
-            var respose = _messageService.CreateMessage(currentUser.Id, message);
+            try
+            {
+                var respose = _messageService.CreateMessage(currentUser.Id, message);
 
-            if (respose.Failed) throw new HubException(respose.FailedMessage);
-
-            await Clients.Group(groupName).SendAsync("NewMessage", respose.Data);
+                await Clients.Group(groupName).SendAsync("NewMessage", respose);
+            }
+            catch (Exception ex)
+            {
+                throw new HubException(ex.Message);
+            }
         }
 
         private string GetGroupName(string currentUserName, string otherUserName)
