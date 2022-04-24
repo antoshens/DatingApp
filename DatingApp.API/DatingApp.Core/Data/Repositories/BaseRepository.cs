@@ -15,20 +15,10 @@ namespace DatingApp.Core.Data.Repositories
             Db = db;
         }
 
-        public BaseRepository(IMapper mapper)
-        {
-            Mapper = mapper;
-        }
-
         public BaseRepository(DataContext db, IMapper mapper)
         {
             Db = db;
             Mapper = mapper;
-        }
-
-        public virtual async Task<TEntity?> GetByPrimaryKeyAsync(int primaryKey)
-        {
-            return await Db.Set<TEntity>().FirstOrDefaultAsync(x => x.PrimaryKey == primaryKey);
         }
 
         public virtual async Task<TEntity?> GetByPredicateAsync(Expression<Func<TEntity, bool>> predicate)
