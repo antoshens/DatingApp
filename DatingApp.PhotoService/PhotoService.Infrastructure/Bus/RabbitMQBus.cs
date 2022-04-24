@@ -23,7 +23,13 @@ namespace PhotoService.Infrastructure
 
         public void Publish<T>(T @event) where T : Event
         {
-            var factory = new ConnectionFactory() { HostName = "localhost" };
+            var factory = new ConnectionFactory()
+            {
+                HostName = "localhost",
+                Port = 5672,
+                DispatchConsumersAsync = true
+            };
+
             using (var connection = factory.CreateConnection())
             using (var channel = connection.CreateModel())
             {
@@ -71,7 +77,7 @@ namespace PhotoService.Infrastructure
         {
             var factory = new ConnectionFactory()
             {
-                HostName = "localhost",
+                HostName = "172.17.0.2",
                 Port = 5672,
                 DispatchConsumersAsync = true
             };
