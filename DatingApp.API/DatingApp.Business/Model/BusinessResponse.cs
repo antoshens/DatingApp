@@ -1,4 +1,4 @@
-﻿namespace DatingApp.Core.Model
+﻿namespace DatingApp.Business.Model
 {
     public class BusinessResponse<T>
     {
