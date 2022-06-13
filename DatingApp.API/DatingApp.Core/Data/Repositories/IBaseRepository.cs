@@ -6,6 +6,8 @@ namespace DatingApp.Core.Data.Repositories
     {
         Task<TEntity?> GetByPredicateAsync(Expression<Func<TEntity, bool>> predicate);
 
+        TDestination Map<TSource, TDestination>(TSource source);
+
         Task<bool> SaveAllAsync();
 
         bool SaveAll();

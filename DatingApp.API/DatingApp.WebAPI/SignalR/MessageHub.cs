@@ -1,5 +1,6 @@
 ﻿using DatingApp.Business.Services.Authentication;
 using DatingApp.Business.Services.Message;
+using DatingApp.Core.Data;
 using DatingApp.Core.Model;
 using Microsoft.AspNetCore.SignalR;
 
@@ -8,17 +9,17 @@ namespace DatingApp.WebAPI.SignalR
     public class MessageHub : Hub
     {
         private readonly ITokenService _tokenService;
-        private readonly IUserService _userService;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IMessageService _messageService;
         private readonly IHubContext<PresenceHub> _presenceHub;
         private readonly PresenceTracker _presenceTracker;
 
         public MessageHub(ITokenService tokenService, IMessageService messageService,
-             IUserService userService, IHubContext<PresenceHub> presenceHub, PresenceTracker presenceTracker)
+             IUnitOfWork unitOfWork, IHubContext<PresenceHub> presenceHub, PresenceTracker presenceTracker)
         {
             _tokenService = tokenService;
             _messageService = messageService;
-            _userService = userService;
+            _unitOfWork = unitOfWork;
             _presenceHub = presenceHub;
             _presenceTracker = presenceTracker;
         }
@@ -31,8 +32,8 @@ namespace DatingApp.WebAPI.SignalR
 
             var groupName = GetGroupName(currentUserName, otherUserName);
 
-            var currentUser = await _userService.GetUserByName(currentUserName);
-            var otherUser = await _userService.GetUserByName(otherUserName);
+            var currentUser = await _unitOfWork.UserRepository.GetByPredicateAsync(u => u.UserName == currentUserName && !u.IsDeleted);
+            var otherUser = await _unitOfWork.UserRepository.GetByPredicateAsync(u => u.UserName == otherUserName && !u.IsDeleted);
 
             var messages = await _messageService.GetMessageThread(otherUser.Id, currentUser.Id);
 
@@ -72,7 +73,7 @@ namespace DatingApp.WebAPI.SignalR
             var otherUserName = httpContext.Request.Query["user"].ToString();
 
             var currentUserName = _tokenService.GetCurrentUserName(Context.User);
-            var currentUser = await _userService.GetUserByName(currentUserName);
+            var currentUser = await _unitOfWork.UserRepository.GetByPredicateAsync(u => u.UserName == currentUserName && !u.IsDeleted);
 
             var groupName = GetGroupName(currentUserName, otherUserName);
             var group = await _messageService.GetMessageGroup(groupName);

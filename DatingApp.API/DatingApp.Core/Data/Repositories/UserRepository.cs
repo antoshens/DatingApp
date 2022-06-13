@@ -37,6 +37,20 @@ namespace DatingApp.Core.Data.Repositories
             return user;
         }
 
+        public IQueryable<User> GetUser(int userId, Expression<Func<User, bool>>? predicate)
+        {
+            var userExpr = GetQueryByExpression(_ => _.Id == userId);
+
+            if (predicate != null)
+            {
+                var userByPredicateExpr = userExpr.Where(predicate);
+
+                return userByPredicateExpr;
+            }
+
+            return userExpr;
+        }
+
         public User GetFullUser(int userId)
         {
             var user = GetQueryByExpression(_ => _.Id == userId)
@@ -111,22 +125,6 @@ namespace DatingApp.Core.Data.Repositories
         public async Task DeleteUser(User user)
         {
             await _userManager.DeleteAsync(user);
-        }
-
-        public UserLike LikeUser(User user, int likedUserId)
-        {
-            var likedUser = user.LikeUser(likedUserId);
-
-            Db.SaveChanges();
-
-            return likedUser;
-        }
-
-        public void UnlikeUser(User user, int likedUserId)
-        {
-            user.UnlikeUser(likedUserId);
-
-            Db.SaveChanges();
         }
     }
 }

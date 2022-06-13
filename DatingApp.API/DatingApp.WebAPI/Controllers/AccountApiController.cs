@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using DatingApp.Business.CQRS.User.Commands;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DatingApp.WebAPI.Controllers
@@ -7,16 +8,17 @@ namespace DatingApp.WebAPI.Controllers
     [Route("api/auth")]
     public class AccountApiController : BaseApiController
     {
-        private readonly IUserService _userService;
+        private readonly ICQRSMediator _mediator;
 
-        public AccountApiController(IUserService userService) {
-            this._userService = userService;
+        public AccountApiController(ICQRSMediator mediator)
+        {
+            _mediator = mediator;
         }
 
         [HttpPost("register")]
         public async Task<UserDto> Register(UserDto model)
         {
-            var result = await _userService.RegisterNewUser(model);
+            var result = await _mediator.CommandByParameter<AuthUserCommand, Task<UserDto>, UserDto>(model);
 
             return result;
         }
@@ -24,7 +26,7 @@ namespace DatingApp.WebAPI.Controllers
         [HttpPost("login")]
         public async Task<LoggedUserDto> Login(LoginUserDto model)
         {
-            var result = await _userService.LoginUser(model);
+            var result = await _mediator.CommandByParameter<AuthUserCommand, Task<LoggedUserDto>, LoginUserDto>(model);
 
             return result;
         }

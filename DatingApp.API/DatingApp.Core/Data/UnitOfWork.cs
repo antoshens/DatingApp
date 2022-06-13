@@ -36,12 +36,12 @@ namespace DatingApp.Core.Data
 
         public int SaveChanges()
         {
-            throw new NotImplementedException();
+            return _db.SaveChanges();
         }
 
         public Task<int> SaveChangesAsync()
         {
-            throw new NotImplementedException();
+            return _db.SaveChangesAsync();
         }
     }
 }

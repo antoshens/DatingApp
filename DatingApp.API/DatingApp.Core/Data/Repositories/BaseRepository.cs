@@ -40,5 +40,10 @@ namespace DatingApp.Core.Data.Repositories
         {
             return Db.Set<TEntity>().Where(predicate);
         }
+
+        public TDestination Map<TSource, TDestination>(TSource source)
+        {
+            return Mapper.Map<TDestination>(source);
+        }
     }
 }

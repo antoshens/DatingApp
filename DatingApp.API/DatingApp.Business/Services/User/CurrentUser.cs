@@ -5,15 +5,15 @@ namespace DatingApp.Business.Services
 {
     public class CurrentUser : ICurrentUser
     {
-        private readonly IUserRepository _userRepository;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly ITokenService _tokenService;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public CurrentUser(IUserRepository userRepository,
+        public CurrentUser(IUnitOfWork unitOfWork,
             ITokenService tokenService,
             IHttpContextAccessor httpContextAccessor)
         {
-            _userRepository = userRepository;
+            _unitOfWork = unitOfWork;
             _tokenService = tokenService;
             _httpContextAccessor = httpContextAccessor;
         }
@@ -23,7 +23,7 @@ namespace DatingApp.Business.Services
             var userPrincipal = _httpContextAccessor.HttpContext?.User;
 
             var currentUserId = _tokenService.GetCurrentUserId(userPrincipal);
-            var currentUser = _userRepository.GetUser(currentUserId.HasValue ? currentUserId.Value : 0);
+            var currentUser = _unitOfWork.UserRepository.GetUser(currentUserId.HasValue ? currentUserId.Value : 0);
 
             return currentUser;
         }

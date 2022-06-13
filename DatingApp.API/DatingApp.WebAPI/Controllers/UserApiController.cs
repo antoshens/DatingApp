@@ -1,4 +1,5 @@
-﻿using DatingApp.Core.Data.Repositories;
+﻿using DatingApp.Business.CQRS.User.Commands;
+using DatingApp.Business.CQRS.User.Queries;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DatingApp.WebAPI.Controllers
@@ -6,15 +7,13 @@ namespace DatingApp.WebAPI.Controllers
     [Route("api/user")]
     public class UserApiController : BaseApiController
     {
-        private readonly IUserRepository _userRepo;
-        private readonly IUserService _userService;
         private readonly ICurrentUser _currentUser;
+        private readonly ICQRSMediator _mediator;
 
-        public UserApiController(IUserRepository userRepo, IUserService userService, ICurrentUser currentUser)
+        public UserApiController(ICurrentUser currentUser, ICQRSMediator mediator)
         {
-            _userRepo = userRepo;
-            _userService = userService;
             _currentUser = currentUser;
+            _mediator = mediator;
 
         }
 
@@ -26,7 +25,7 @@ namespace DatingApp.WebAPI.Controllers
         [Route("member/{userId}"), HttpGet]
         public MemberDto GetMemberDetails(int userId)
         {
-           return _userRepo.GetUser<MemberDto>(userId);
+           return _mediator.QueryByParameter<GetUserQuery, MemberDto, int>(userId);
         }
 
         /// <summary>
@@ -36,43 +35,43 @@ namespace DatingApp.WebAPI.Controllers
         [Route("user"), HttpGet]
         public UserDto GetUserDetails()
         {
-            return _userRepo.GetUser<UserDto>(_currentUser.UserId);
+            return _mediator.QueryByParameter<GetUserQuery, UserDto, int>(_currentUser.UserId);
         }
 
         [Route("user"), HttpPut]
         public async Task<UserDto> UpdateUser(UserDto user)
         {
-            return await _userService.UpdateUser(_currentUser.UserId, user);
+            return await _mediator.CommandByTwoParameters<UpdateUserCommand, Task<UserDto>, int, UserDto>(_currentUser.UserId, user);
         }
 
         [Route("user"), HttpDelete]
-        public void DeleteUser()
+        public async Task DeleteUser()
         {
-            _userService.DeleteUser(_currentUser.UserId);
+            await _mediator.CommandByParameter<DeleteUserCommand, Task, int>(_currentUser.UserId);
         }
 
         [Route("likeUser/{likedUserId}"), HttpPost]
         public void LikeUser(int likeduserId)
         {
-            _userService.LikeUser(_currentUser.UserId, likeduserId);
+            _mediator.CommandByIdAndTwoParameters<UpdateUserCommand, int, bool>(_currentUser.UserId, likeduserId, true);
         }
 
         [Route("unlikeUser/{unlikedUserId}"), HttpPost]
         public void UnkikeUser( int unlikedUserId)
         {
-            _userService.UnlikeUser(_currentUser.UserId, unlikedUserId);
+            _mediator.CommandByIdAndTwoParameters<UpdateUserCommand, int, bool>(_currentUser.UserId, unlikedUserId, false);
         }
 
         [Route("likedUsers"), HttpGet]
         public async Task<IEnumerable<UserDto>> GetLikedUsers()
         {
-            return await _userService.GetLikedUsers(_currentUser.UserId);
+            return await _mediator.QueryByTwoParameters<GetUserQuery, Task<IEnumerable<UserDto>>, int, bool>(_currentUser.UserId, false);
         }
 
         [Route("likedByUsers"), HttpGet]
         public async Task<IEnumerable<UserDto>> GetLikedByUsers()
         {
-            return await _userService.GetLikedByUsers(_currentUser.UserId);
+            return await _mediator.QueryByTwoParameters<GetUserQuery, Task<IEnumerable<UserDto>>, int, bool>(_currentUser.UserId, true);
         }
     }
 }

@@ -16,6 +16,8 @@ using DatingApp.Business.Services.Message;
 using DatingApp.Core.Model;
 using Microsoft.AspNetCore.Identity;
 using DatingApp.Business.Model;
+using DatingApp.Business.CQRS;
+using DatingApp.Business.CQRS.User.Queries;
 
 namespace DatingApp.Infrastructure.IoC
 {
@@ -61,14 +63,31 @@ namespace DatingApp.Infrastructure.IoC
 
             // DatingApp.Business
             /* Register services */
-            services.AddScoped<IUserService, UserService>();
             services.AddScoped<ITokenService, TokenService>();
-            services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<ICurrentUser, CurrentUser>();
             services.AddScoped<IPhotoRepository, PhotoRepository>();
             services.AddScoped<IPhotoService, PhotoService>();
             services.AddScoped<IMessageRepository, MessageRepository>();
             services.AddScoped<IMessageService, MessageService>();
+
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+            /* CQRS Mediator */
+            services.AddScoped<ICQRSMediator, CQRSMediator>(sp =>
+            {
+                return new CQRSMediator(sp);
+            });
+
+            /* Queries and Commands */
+            var business = typeof(ICQRSMediator).Assembly;
+            var cqrsTypes = business.GetTypes().Where(t => (typeof(ICommandHandler).IsAssignableFrom(t)
+                    || typeof(IQueryHandler).IsAssignableFrom(t))
+                    && t != typeof(ICommandHandler) && t != typeof(IQueryHandler));
+
+            foreach (Type cqrsTypeToRegister in cqrsTypes)
+            {
+                services.AddScoped(cqrsTypeToRegister);
+            }
 
             services.AddSignalR();
 
