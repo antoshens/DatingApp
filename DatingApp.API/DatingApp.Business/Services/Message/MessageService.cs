@@ -12,7 +12,6 @@
         public void AddGroup(Group group)
         {
             _messageRepository.AddGroup(group);
-            _messageRepository.SaveAll();
         }
 
         public Core.Model.Message CreateMessage(int senderId, SendMessageDto newMessage)
@@ -32,7 +31,6 @@
             try
             {
                 _messageRepository.AddMessage(message);
-                _messageRepository.SaveAll();
             }
             catch (Exception)
             {
@@ -50,7 +48,6 @@
                     throw new ArgumentNullException(nameof(message));
 
                 _messageRepository.DeleteMessage(message.Id, messageDeletionOption);
-                _messageRepository.SaveAll();
             }
             catch (Exception)
             {
@@ -63,7 +60,6 @@
         public GetMessageDto EditMessage(int messageId, string newContent)
         {
             var newMessage = _messageRepository.EditMessage(messageId, newContent);
-            _messageRepository.SaveAll();
 
             return newMessage;
         }
@@ -88,13 +84,11 @@
             var group = await _messageRepository.GetMessageGroup(groupName);
 
             group.Connections.Add(connection);
-            _messageRepository.SaveAll();
         }
 
         public void RemoveConnection(Connection connection)
         {
             _messageRepository.RemoveConnection(connection);
-            _messageRepository.SaveAll();
         }
     }
 }

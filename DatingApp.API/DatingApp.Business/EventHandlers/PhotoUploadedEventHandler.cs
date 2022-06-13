@@ -1,16 +1,17 @@
-﻿using DatingApp.Business.Events;
-using DatingApp.Business.Services;
+﻿using DatingApp.Business.CQRS;
+using DatingApp.Business.CQRS.Photo.Commands;
+using DatingApp.Business.Events;
 using DatingApp.Core.Bus;
 
 namespace DatingApp.Business.EventHandlers
 {
     public class PhotoUploadedEventHandler : IEventHandler<PhotoUploadedEvent>
     {
-        private readonly IPhotoService _photoService;
+        private readonly ICQRSMediator _mediator;
 
-        public PhotoUploadedEventHandler(IPhotoService photoService)
+        public PhotoUploadedEventHandler(ICQRSMediator mediator)
         {
-            _photoService = photoService;
+            _mediator = mediator;
         }
 
         public Task Handle(PhotoUploadedEvent @event)
@@ -23,7 +24,7 @@ namespace DatingApp.Business.EventHandlers
                 UserId = @event.UserId
             };
 
-            _photoService.UploadNewPhoto(photoModel);
+            _mediator.CommandByParameter<AddPhotoCommand, PhotoDto, PhotoDto>(photoModel);
 
             return Task.CompletedTask;
         }

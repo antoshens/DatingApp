@@ -1,6 +1,7 @@
-﻿using DatingApp.Business.Events;
+﻿using DatingApp.Business.CQRS.Photo.Commands;
+using DatingApp.Business.CQRS.Photo.Queires;
+using DatingApp.Business.Events;
 using DatingApp.Core.Bus;
-using DatingApp.WebAPI.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Formatter;
 using Microsoft.AspNetCore.OData.Query;
@@ -11,20 +12,20 @@ namespace DatingApp.WebAPI.Controllers
     public class PhotoApiController : BaseApiController
     {
         private readonly IEventBus _eventBus;
-        private readonly IPhotoService _photoService;
+        private readonly ICQRSMediator _mediator;
         private readonly ICurrentUser _user;
 
-        public PhotoApiController(IEventBus eventBus, IPhotoService photoService, ICurrentUser user)
+        public PhotoApiController(IEventBus eventBus, ICQRSMediator mediator, ICurrentUser user)
         {
             _eventBus = eventBus;
-            _photoService = photoService;
+            _mediator = mediator;
             _user = user;
         }
 
         [Route("upload/{isMain}"), HttpPost]
         public async Task UploadNewPhoto(IFormFile file, bool isMain)
         {
-            var buffer = await _photoService.CreatePhotoByteArrayAsync(file);
+            var buffer = await _mediator.CommandByParameter<AddPhotoCommand, Task<byte[]>, IFormFile>(file);
 
             _eventBus.Publish(new PhotoAddedEvent
             {
@@ -49,12 +50,7 @@ namespace DatingApp.WebAPI.Controllers
         [EnableQuery]
         public IEnumerable<PhotoDto> GetPhotos([FromODataUri] int userId)
         {
-            if (_user.UserId != userId)
-            {
-                throw new ForbiddenRequestException();
-            }
-
-            return _photoService.GetUserPhotos(userId);
+            return _mediator.QueryByParameter<GetUserPhotosQuery, IEnumerable<PhotoDto>, int>(userId);
         }
     }
 }

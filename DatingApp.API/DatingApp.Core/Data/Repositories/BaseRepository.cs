@@ -26,16 +26,6 @@ namespace DatingApp.Core.Data.Repositories
             return await Db.Set<TEntity>().FirstOrDefaultAsync(predicate);
         }
 
-        public async Task<bool> SaveAllAsync()
-        {
-            return await Db.SaveChangesAsync() > 0;
-        }
-
-        public bool SaveAll()
-        {
-            return Db.SaveChanges() > 0;
-        }
-
         protected virtual IQueryable<TEntity> GetQueryByExpression(Expression<Func<TEntity, bool>> predicate)
         {
             return Db.Set<TEntity>().Where(predicate);

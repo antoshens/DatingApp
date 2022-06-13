@@ -65,8 +65,6 @@ namespace DatingApp.Infrastructure.IoC
             /* Register services */
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<ICurrentUser, CurrentUser>();
-            services.AddScoped<IPhotoRepository, PhotoRepository>();
-            services.AddScoped<IPhotoService, PhotoService>();
             services.AddScoped<IMessageRepository, MessageRepository>();
             services.AddScoped<IMessageService, MessageService>();
 

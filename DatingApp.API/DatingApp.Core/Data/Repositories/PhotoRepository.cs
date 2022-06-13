@@ -14,8 +14,6 @@ namespace DatingApp.Core.Data.Repositories
         {
             Db.Photos.Add(photo);
 
-            SaveAll();
-
             var photoModel = Mapper.Map<Photo, PhotoDto>(photo);
             return photoModel;
         }
@@ -23,8 +21,6 @@ namespace DatingApp.Core.Data.Repositories
         public async Task DeletePhoto(Photo photo)
         {
             Db.Photos.Remove(photo);
-
-            await SaveAllAsync();
         }
 
         public IEnumerable<PhotoDto> GetAllPhotosByUserId(int userId)
