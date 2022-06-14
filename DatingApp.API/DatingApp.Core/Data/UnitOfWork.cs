@@ -14,6 +14,7 @@ namespace DatingApp.Core.Data
         // Repositories
         private IUserRepository _userRepository;
         private IPhotoRepository _photoRepository;
+        private IMessageRepository _messageRepository;
 
         public UnitOfWork(DataContext db, IMapper mapper, UserManager<User> userManager)
         {
@@ -45,6 +46,19 @@ namespace DatingApp.Core.Data
                 }
 
                 return _photoRepository;
+            }
+        }
+
+        public IMessageRepository MessageRepository
+        {
+            get
+            {
+                if (_messageRepository is null)
+                {
+                    _messageRepository = new MessageRepository(_db, _mapper);
+                }
+
+                return _messageRepository;
             }
         }
 

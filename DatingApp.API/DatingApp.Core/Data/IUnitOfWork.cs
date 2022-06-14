@@ -6,6 +6,7 @@ namespace DatingApp.Core.Data
     {
         IUserRepository UserRepository { get; }
         IPhotoRepository PhotoRepository { get; }
+        IMessageRepository MessageRepository { get; }
         int SaveChanges();
         Task<int> SaveChangesAsync();
     }

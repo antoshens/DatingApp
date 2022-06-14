@@ -1,5 +1,5 @@
-﻿using DatingApp.Business.Services.Authentication;
-using DatingApp.Business.Services.Message;
+﻿using DatingApp.Business.CQRS.Message.Commands;
+using DatingApp.Business.Services.Authentication;
 using DatingApp.Core.Data;
 using DatingApp.Core.Model;
 using Microsoft.AspNetCore.SignalR;
@@ -10,16 +10,16 @@ namespace DatingApp.WebAPI.SignalR
     {
         private readonly ITokenService _tokenService;
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IMessageService _messageService;
+        private readonly ICQRSMediator _mediator;
         private readonly IHubContext<PresenceHub> _presenceHub;
         private readonly PresenceTracker _presenceTracker;
 
-        public MessageHub(ITokenService tokenService, IMessageService messageService,
-             IUnitOfWork unitOfWork, IHubContext<PresenceHub> presenceHub, PresenceTracker presenceTracker)
+        public MessageHub(ITokenService tokenService, IUnitOfWork unitOfWork, ICQRSMediator mediator,
+            IHubContext<PresenceHub> presenceHub, PresenceTracker presenceTracker)
         {
             _tokenService = tokenService;
-            _messageService = messageService;
             _unitOfWork = unitOfWork;
+            _mediator = mediator;
             _presenceHub = presenceHub;
             _presenceTracker = presenceTracker;
         }
@@ -35,7 +35,7 @@ namespace DatingApp.WebAPI.SignalR
             var currentUser = await _unitOfWork.UserRepository.GetByPredicateAsync(u => u.UserName == currentUserName && !u.IsDeleted);
             var otherUser = await _unitOfWork.UserRepository.GetByPredicateAsync(u => u.UserName == otherUserName && !u.IsDeleted);
 
-            var messages = await _messageService.GetMessageThread(otherUser.Id, currentUser.Id);
+            var messages = await _unitOfWork.MessageRepository.GetMessageThread(otherUser.Id, currentUser.Id);
 
             await Clients.Group(groupName).SendAsync("ReceiveMessageThread", messages);
         }
@@ -47,24 +47,26 @@ namespace DatingApp.WebAPI.SignalR
 
         public async Task<Group> AddToGroup(string groupName)
         {
-            var group = await _messageService.GetMessageGroup(groupName);
+            var group = await _unitOfWork.MessageRepository.GetMessageGroup(groupName);
             var connection = new Connection(Context.ConnectionId, _tokenService.GetCurrentUserName(Context.User));
 
             if (group is null)
             {
                 group = new Group(groupName);
-                _messageService.AddGroup(group);
+                _unitOfWork.MessageRepository.AddGroup(group);
             }
 
-            await _messageService.AddConnectionToGroup(groupName, connection);
+            await _mediator.CommandByTwoParameters<AddConnectionToGroupCommand, Task, string, Connection>(groupName, connection);
 
             return group;
         }
 
         public async Task RemoveFromGroup()
         {
-            var connection = await _messageService.GetConnection(Context.ConnectionId);
-            _messageService.RemoveConnection(connection);
+            var connection = await _unitOfWork.MessageRepository.GetConnection(Context.ConnectionId);
+            _unitOfWork.MessageRepository.RemoveConnection(connection);
+
+            _unitOfWork.SaveChanges();
         }
 
         public async Task SendMessage(SendMessageDto message)
@@ -76,7 +78,7 @@ namespace DatingApp.WebAPI.SignalR
             var currentUser = await _unitOfWork.UserRepository.GetByPredicateAsync(u => u.UserName == currentUserName && !u.IsDeleted);
 
             var groupName = GetGroupName(currentUserName, otherUserName);
-            var group = await _messageService.GetMessageGroup(groupName);
+            var group = await _unitOfWork.MessageRepository.GetMessageGroup(groupName);
 
             if (!group.Connections.Any(c => c.UserName == otherUserName))
             {
@@ -94,7 +96,7 @@ namespace DatingApp.WebAPI.SignalR
 
             try
             {
-                var respose = _messageService.CreateMessage(currentUser.Id, message);
+                var respose = _mediator.CommandByTwoParameters<CreateNewMessageCommand, Message, int, SendMessageDto>(currentUser.Id, message);
 
                 await Clients.Group(groupName).SendAsync("NewMessage", respose);
             }

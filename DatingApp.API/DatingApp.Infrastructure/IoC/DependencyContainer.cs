@@ -6,18 +6,15 @@ using Microsoft.EntityFrameworkCore;
 using DatingApp.Business.Services.Authentication;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Http;
-using DatingApp.Core.Data.Repositories;
 using DatingApp.Core.Model.AutoMapper;
 using DatingApp.Core.Bus;
 using DatingApp.Infrastructure.Bus;
 using DatingApp.Business.EventHandlers;
 using DatingApp.Business.Events;
-using DatingApp.Business.Services.Message;
 using DatingApp.Core.Model;
 using Microsoft.AspNetCore.Identity;
 using DatingApp.Business.Model;
 using DatingApp.Business.CQRS;
-using DatingApp.Business.CQRS.User.Queries;
 
 namespace DatingApp.Infrastructure.IoC
 {
@@ -65,9 +62,8 @@ namespace DatingApp.Infrastructure.IoC
             /* Register services */
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<ICurrentUser, CurrentUser>();
-            services.AddScoped<IMessageRepository, MessageRepository>();
-            services.AddScoped<IMessageService, MessageService>();
 
+            /* Unit of work */
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             /* CQRS Mediator */
