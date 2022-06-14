@@ -32,19 +32,19 @@ namespace DatingApp.WebAPI.Controllers
         /// Get info about the logged user
         /// </summary>
         /// <returns></returns>
-        [Route("user"), HttpGet]
+        [HttpGet]
         public UserDto GetUserDetails()
         {
             return _mediator.QueryByParameter<GetUserQuery, UserDto, int>(_currentUser.UserId);
         }
 
-        [Route("user"), HttpPut]
+        [HttpPut]
         public async Task<UserDto> UpdateUser(UserDto user)
         {
             return await _mediator.CommandByTwoParameters<UpdateUserCommand, Task<UserDto>, int, UserDto>(_currentUser.UserId, user);
         }
 
-        [Route("user"), HttpDelete]
+        [HttpDelete]
         public async Task DeleteUser()
         {
             await _mediator.CommandByParameter<DeleteUserCommand, Task, int>(_currentUser.UserId);
