@@ -35,6 +35,12 @@
             {
                 await _next(context);
             }
+            catch(Exception ex)
+            {
+#if DEBUG
+                _logger.LogError($"Unknown exception has been thrown: {ex.Message}");
+#endif
+            }
             finally
             {
                 var currentUserId = currentuser.UserId;
