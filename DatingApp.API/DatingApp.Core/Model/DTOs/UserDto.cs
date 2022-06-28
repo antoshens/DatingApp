@@ -22,8 +22,7 @@ namespace DatingApp.Core.Model.DTOs
 
         public string Country { get; set; }
 
-        [Required]
-        public IEnumerable<PhotoDto> Photos { get; set; }
+        public IEnumerable<PhotoDto> Photos { get; set; } = Enumerable.Empty<PhotoDto>();
 
         public string? FirstName { get; set; }
 
