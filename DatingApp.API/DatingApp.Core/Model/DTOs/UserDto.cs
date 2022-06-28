@@ -13,16 +13,13 @@ namespace DatingApp.Core.Model.DTOs
         [StringLength(64, MinimumLength = 6)]
         public string Password { get; set; }
 
-        [Required]
         public string Interests { get; set; }
 
         [Required]
         public LookingFor LookingFor { get; set; }
 
-        [Required]
         public string City { get; set; }
 
-        [Required]
         public string Country { get; set; }
 
         [Required]
