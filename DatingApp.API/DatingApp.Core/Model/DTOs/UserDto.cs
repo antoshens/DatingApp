@@ -17,7 +17,7 @@ namespace DatingApp.Core.Model.DTOs
         public string Interests { get; set; }
 
         [Required]
-        public string LookingFor { get; set; }
+        public LookingFor LookingFor { get; set; }
 
         [Required]
         public string City { get; set; }

@@ -19,7 +19,7 @@ namespace DatingApp.Core.Model
         public byte? Sex { get; private set; }
         public DateTime LastActive { get; private set; } = DateTime.UtcNow;
         public string Interests { get; private set; }
-        public string LookingFor {get; private set; }
+        public byte LookingFor {get; private set; }
         public string City { get; private set; }
         public string Country { get; private set; }
 

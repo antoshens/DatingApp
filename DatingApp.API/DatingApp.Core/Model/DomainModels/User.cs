@@ -13,7 +13,7 @@ namespace DatingApp.Core.Model
         }
 
         public User(string userName, string email, string interests,
-            string lookingFor, string city, string country, string publicPhotoId, string photoUrl,
+            LookingFor lookingFor, string city, string country, string publicPhotoId, string photoUrl,
             DateTime? birthDate = null, string? firstName = null, string? lastName = null, byte? sex = null)
         {
             if (string.IsNullOrEmpty(userName) || string.IsNullOrWhiteSpace(userName))
@@ -27,7 +27,7 @@ namespace DatingApp.Core.Model
             LastName = lastName;
             BirthDate = birthDate;
             Interests = interests;
-            LookingFor = lookingFor;
+            LookingFor = (byte)lookingFor;
             City = city;
             Country = country;
 
@@ -57,14 +57,14 @@ namespace DatingApp.Core.Model
             return BirthDate?.GetFullAge();
         }
 
-        public void UpdateMainUserFields(string interests, string lookingFor, string city, string country,
+        public void UpdateMainUserFields(string interests, LookingFor lookingFor, string city, string country,
             DateTime? birthDate = null, string? firstName = null, string? lastName = null, byte? sex = null)
         {
             FirstName = firstName;
             LastName = lastName;
             BirthDate = birthDate;
             Interests = interests;
-            LookingFor = lookingFor;
+            LookingFor = (byte)lookingFor;
             City = city;
             Country = country;
         }
