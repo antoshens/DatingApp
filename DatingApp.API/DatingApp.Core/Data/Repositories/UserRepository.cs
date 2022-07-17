@@ -126,5 +126,18 @@ namespace DatingApp.Core.Data.Repositories
         {
             await _userManager.DeleteAsync(user);
         }
+
+        public IEnumerable<T> GetAllUsers<T>(int skip, int take)
+        {
+            var allUsers = _userManager.Users
+                .Include(x => x.Photos)
+                .Skip(skip)
+                .Take(take)
+                .ToList();
+
+            var resultModel = allUsers.Select(u => this.Mapper.Map<User, T>(u));
+
+            return resultModel;
+        }
     }
 }

@@ -1,5 +1,7 @@
 ﻿using DatingApp.Business.CQRS.User.Commands;
 using DatingApp.Business.CQRS.User.Queries;
+using DatingApp.Business.Model;
+using Microsoft.AspNet.OData;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DatingApp.WebAPI.Controllers
@@ -15,6 +17,22 @@ namespace DatingApp.WebAPI.Controllers
             _currentUser = currentUser;
             _mediator = mediator;
 
+        }
+
+        /// <summary>
+        /// Gets all members exclude the logged one
+        /// </summary>
+        /// <returns></returns>
+        [Route("members"), HttpGet]
+        [EnableQuery]
+        public IEnumerable<MemberDto> GetAllmembers([FromODataUri] int skip, [FromODataUri] int take)
+        {
+            var oDataFilter = new ODataParameters
+            {
+                Skip = skip,
+                Take = take
+            };
+            return _mediator.QueryByTwoParameters<GetAllUsersQuery, IEnumerable<MemberDto>, ODataParameters, int>(oDataFilter, _currentUser.UserId);
         }
 
         /// <summary>

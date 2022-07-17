@@ -6,6 +6,7 @@ namespace DatingApp.Core.Data.Repositories
 {
     public interface IUserRepository : IBaseRepository<User>
     {
+        IEnumerable<T> GetAllUsers<T>(int skip, int take);
         T GetUser<T>(int userId);
         User GetUser(int userId);
         IQueryable<User> GetUser(int userId, Expression<Func<User, bool>>? predicate);
