@@ -9,15 +9,17 @@ using DatingApp.WebAPI.Utils.Extensions;
 using Microsoft.AspNetCore.OData;
 
 var builder = WebApplication.CreateBuilder(args);
+var configuration = builder.Configuration;
 
-builder.Configuration["EnvironmentName"] = builder.Environment.EnvironmentName;
+configuration["EnvironmentName"] = builder.Environment.EnvironmentName;
+var origins = configuration["Origins"];
 
 // Add services to the container.
-RegisterServices(builder.Services, builder.Configuration);
+RegisterServices(builder.Services, configuration);
 
-BuildConfigurationOptions(builder.Services, builder.Configuration);
+BuildConfigurationOptions(builder.Services, configuration);
 
-builder.Services.AddAuthentication(builder.Configuration);
+builder.Services.AddAuthentication(configuration);
 
 var app = builder.Build();
 
@@ -39,7 +41,7 @@ app.UseRouting();
 app.UseCors(_ => _.AllowAnyHeader()
     .AllowAnyMethod()
     .AllowCredentials()
-    .WithOrigins("http://localhost:4200")); // TODO: Use shared config file to store FE instance host address
+    .WithOrigins(origins.Split(";"))); 
 
 app.UseAuthentication();
 
