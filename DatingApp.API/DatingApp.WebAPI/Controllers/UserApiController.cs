@@ -63,21 +63,21 @@ namespace DatingApp.WebAPI.Controllers
         }
 
         [HttpDelete]
-        public async Task DeleteUser()
+        public async Task<int> DeleteUser()
         {
-            await _mediator.CommandByParameter<DeleteUserCommand, Task, int>(_currentUser.UserId);
+            return await _mediator.CommandByParameter<DeleteUserCommand, Task<int>, int>(_currentUser.UserId);
         }
 
         [Route("likeUser/{likedUserId}"), HttpPost]
-        public void LikeUser(int likeduserId)
+        public int LikeUser(int likeduserId)
         {
-            _mediator.CommandByIdAndTwoParameters<UpdateUserCommand, int, bool>(_currentUser.UserId, likeduserId, true);
+            return _mediator.CommandByIdAndTwoParameters<UpdateUserCommand, int, int, bool>(_currentUser.UserId, likeduserId, true);
         }
 
         [Route("unlikeUser/{unlikedUserId}"), HttpPost]
-        public void UnkikeUser( int unlikedUserId)
+        public int UnkikeUser( int unlikedUserId)
         {
-            _mediator.CommandByIdAndTwoParameters<UpdateUserCommand, int, bool>(_currentUser.UserId, unlikedUserId, false);
+            return _mediator.CommandByIdAndTwoParameters<UpdateUserCommand, int, int, bool> (_currentUser.UserId, unlikedUserId, false);
         }
 
         [Route("likedUsers"), HttpGet]

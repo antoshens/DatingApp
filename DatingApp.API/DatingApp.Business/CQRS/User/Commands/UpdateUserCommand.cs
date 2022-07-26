@@ -2,7 +2,7 @@
 {
     public class UpdateUserCommand : ICommandHandler,
         ICommandByTwoParametersHandler<Task<UserDto>, int, UserDto>,
-        ICommandByIdAndTwoParametersHandler<int, bool>
+        ICommandByIdAndTwoParametersHandler<int, int, bool>
     {
         private readonly IUnitOfWork _unitOfWork;
 
@@ -19,7 +19,7 @@
             return userDto;
         }
 
-        public void HandleCommand(int sourceUserId, int interactedUserId, bool isLiked)
+        public int HandleCommand(int sourceUserId, int interactedUserId, bool isLiked)
         {
             var user = _unitOfWork.UserRepository.GetFullUser(sourceUserId);
 
@@ -32,7 +32,9 @@
                 user.UnlikeUser(interactedUserId);
             }
 
-            _unitOfWork.SaveChanges();
+            var result = _unitOfWork.SaveChanges();
+
+            return result > 0 ? interactedUserId : 0;
         }
     }
 }
